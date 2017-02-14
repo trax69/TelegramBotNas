@@ -1,0 +1,12 @@
+C:\adb\Projects\nasBot\bin\Debug\nasBot.exe
+C:\adb\Projects\nasBot\bin\Debug\nasBot.pdb
+C:\adb\Projects\nasBot\bin\Debug\mscorlib.dll
+C:\adb\Projects\nasBot\bin\Debug\es\mscorlib.resources.dll
+C:\adb\Projects\nasBot\bin\Debug\normidna.nlp
+C:\adb\Projects\nasBot\bin\Debug\normnfc.nlp
+C:\adb\Projects\nasBot\bin\Debug\normnfd.nlp
+C:\adb\Projects\nasBot\bin\Debug\normnfkc.nlp
+C:\adb\Projects\nasBot\bin\Debug\normnfkd.nlp
+C:\adb\Projects\nasBot\obj\x86\Debug\nasBot.csprojResolveAssemblyReference.cache
+C:\adb\Projects\nasBot\obj\x86\Debug\nasBot.exe
+C:\adb\Projects\nasBot\obj\x86\Debug\nasBot.pdb
