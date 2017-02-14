@@ -10,6 +10,7 @@ namespace nasBot
 			foreach (string arg in args) {
 				Console.WriteLine(arg);
 			}
+			Console.Write("\nPress any key to continue... ");
 			Console.ReadLine();
 		}
 	}
