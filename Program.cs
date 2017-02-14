@@ -11,7 +11,7 @@ namespace nasBot
 				Console.WriteLine(arg);
 			}
 			Console.Write("\nPress any key to continue... ");
-			Console.ReadLine();
+			Console.ReadKey();
 		}
 	}
 }

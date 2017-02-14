@@ -28,3 +28,5 @@ C:\adb\Projects\nasBot\trax69\TelegramBotNas.git\bin\Debug\normnfkd.nlp
 C:\adb\Projects\nasBot\trax69\TelegramBotNas.git\obj\x86\Debug\nasBot.csprojResolveAssemblyReference.cache
 C:\adb\Projects\nasBot\trax69\TelegramBotNas.git\obj\x86\Debug\nasBot.exe
 C:\adb\Projects\nasBot\trax69\TelegramBotNas.git\obj\x86\Debug\nasBot.pdb
+C:\adb\Projects\nasBot\trax69\TelegramBotNas.git\bin\Debug\nasBot.exe.config
+C:\adb\Projects\nasBot\trax69\TelegramBotNas.git\obj\x86\Debug\nasBot.csproj.nasBot.exe.config
