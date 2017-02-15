@@ -34,14 +34,17 @@ namespace nasBot {
 			/* Cargar configuración del bot */
 			obj.loadConfig (obj);
 
+			/* Si el token es nulo ( a trax69 le pasa mucho ) */
 			if (obj.botKey == null) { 
 				Console.WriteLine("Couldn't detect botTokenKey, please insert it now: ");
 				obj.botKey = Console.ReadLine();
 				Console.WriteLine("Is this your token ?(Y/N): " + obj.botKey);
 				if (Console.ReadKey().Key == ConsoleKey.Y) {
-					Console.WriteLine("");
+					obj.saveSettings("key", obj.botKey);
+					Console.WriteLine("Your token has been saved !");
 				}
 				else { 
+					Console.WriteLine("We are sorry to hear that, please start again the app.");
 				}
 			}
 
