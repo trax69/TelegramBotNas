@@ -1,12 +1,14 @@
-﻿<Properties StartupItem="nasBot.csproj">
+﻿<Properties StartupConfiguration="{0EC57CC7-6A54-45F7-8BCF-1DFD552DE35F}|Default">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Program.cs">
-    <Files>
-      <File FileName="Program.cs" Line="21" Column="17" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Estado de TelegramBotNas.git">
+    <Files>
+      <File FileName="Program.cs" Line="81" Column="4" />
+      <File FileName="Estado de TelegramBotNas.git" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.nasBot PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>

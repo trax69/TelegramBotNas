@@ -42,6 +42,8 @@
       <HintPath>packages\Telegram.Bot.10.4.0\lib\net45\Telegram.Bot.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
