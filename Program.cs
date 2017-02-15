@@ -3,10 +3,9 @@ using System.Configuration;
 using Telegram.Bot;
 
 namespace nasBot {
-	
 	class nasBot {
 
-		private string botKey = "";
+		string botKey = "";
 		public static void Main(string[] args) {
 
 			/* Crear una instancia del objeto para poder acceder a los metodos privados */
@@ -16,7 +15,7 @@ namespace nasBot {
 			foreach (string arg in args) {
 				// Si los argumentos contienen un igual EJ: Key=Value
 				if (arg.Contains ("=")) {
-					// Separa el string en un array diviendo por el '='
+					// Separa el string en un array dividiendo por el '='
 					string[] data = arg.Split ((char)'=');
 					// Si la primera parte del array contiene 'key', asignamos en los ajustes
 					if (data [0].Contains ("key")) {
