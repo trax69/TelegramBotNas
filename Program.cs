@@ -1,7 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Net;
-using System.Threading;
 using System.Configuration;
 using Telegram.Bot;
 
@@ -10,7 +7,6 @@ namespace nasBot {
 	class nasBot {
 
 		private string botKey = "";
-		private bool progLoop = true;
 		public static void Main(string[] args) {
 
 			/* Crear una instancia del objeto para poder acceder a los metodos privados */
@@ -38,19 +34,28 @@ namespace nasBot {
 			/* Cargar configuración del bot */
 			obj.loadConfig (obj);
 
-			Telegram.Bot.TelegramBotClient bot = new TelegramBotClient (obj.botKey);
-			bot.StartReceiving ();
-			bot.OnMessage += Bot_OnMessage;
-
-			while (obj.progLoop) {
-				System.Threading.Thread.Sleep (10000);
+			if (obj.botKey == null) { 
+				Console.WriteLine("Couldn't detect botTokenKey, please insert it now: ");
+				obj.botKey = Console.ReadLine();
+				Console.WriteLine("Is this your token ?(Y/N): " + obj.botKey);
+				if (Console.ReadKey().Key == ConsoleKey.Y) {
+					Console.WriteLine("");
+				}
+				else { 
+				}
 			}
 
-			bot.StopReceiving ();
+			TelegramBotClient bot = new TelegramBotClient (obj.botKey);
+			bot.StartReceiving ();
+			bot.OnMessage += Bot_OnMessage;
+			bot.OnMessageEdited += Bot_OnMessage;
 
 			/* Especifico para Windows para que no se cierre automaticamente la ventana */
-			Console.Write("\nPress any key to continue... ");
-			Console.ReadKey();
+			Console.Write("\nPress ENTER to STOP the bot and EXIT.");
+			Console.ReadLine();
+			// Parar el bot !
+			bot.StopReceiving();
+			Environment.Exit(0);
 		}
 
 		static void Bot_OnMessage (object sender, Telegram.Bot.Args.MessageEventArgs e) {
