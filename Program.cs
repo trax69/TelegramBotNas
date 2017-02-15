@@ -9,7 +9,7 @@ namespace nasBot {
 		public static void Main(string[] args) {
 
 			/* Crear una instancia del objeto para poder acceder a los metodos privados */
-			nasBot obj = new nasBot ();
+			var obj = new nasBot ();
 
 			/* Recorrer los argumentos pasados a la app */
 			foreach (string arg in args) {
@@ -47,7 +47,9 @@ namespace nasBot {
 				}
 			}
 
-			TelegramBotClient bot = new TelegramBotClient (obj.botKey);
+			var bot = new TelegramBotClient (obj.botKey);
+			// Ponerle nombre a la consola
+			Console.Title = bot.GetMeAsync().Result.Username;
 			bot.StartReceiving ();
 			bot.OnMessage += Bot_OnMessage;
 			bot.OnMessageEdited += Bot_OnMessage;
@@ -62,16 +64,33 @@ namespace nasBot {
 
 		static void Bot_OnMessage (object sender, Telegram.Bot.Args.MessageEventArgs e) {
 			// Crea un nuevo objeto TelegramBotClient apartir del sender para poder hacer cosas con los mensajes
-			TelegramBotClient bot = (TelegramBotClient)sender;
+			var bot = (TelegramBotClient)sender;
 			// Bloque debug para la APP
 			Console.WriteLine ("Message Received: ");
 			Console.WriteLine ("ChatID: " + e.Message.Chat.Id);
 			Console.WriteLine ("MessageID: " + e.Message.MessageId);
 			Console.WriteLine ("FromID: " + e.Message.From.Id);
 			Console.WriteLine ("Message: " + e.Message.Text);
-			Console.WriteLine (" ");
+			Console.WriteLine(" ");
+			/* ------------------- EJEMPLO DE TECLADO 
+			var keyboard = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup(new[] {
+				new[] { // Primera fila de opciones
+					new Telegram.Bot.Types.KeyboardButton("Primero")
+				},
+				new[] { // Segunda fila de opciones
+					new Telegram.Bot.Types.KeyboardButton("Segundo"),
+					new Telegram.Bot.Types.KeyboardButton("Tercero")
+				}
+			});
+			keyboard.OneTimeKeyboard = true;
+			keyboard.ResizeKeyboard = true;
+			keyboard.Selective = true;
+			// Manda mensaje con teclado custom
+			bot.SendTextMessageAsync (e.Message.Chat.Id, e.Message.Text, true, true,replyMarkup: keyboard);
+			*/
+
 			// Devuelve el mensaje que le ha llegado a quien se lo haya mandado
-			bot.SendTextMessageAsync (e.Message.Chat.Id, e.Message.Text);
+			bot.SendTextMessageAsync(e.Message.Chat.Id, e.Message.Text);
 			// Libera el espacio del objeto bot, se crea cada vez que se recibe un mensaje
 			bot = null;
 
