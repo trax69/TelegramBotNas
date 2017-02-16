@@ -36,29 +36,25 @@ class nasBot {
 		/* Cargar configuración del bot */
 		obj.loadConfig (obj);
 
-		/* Si el token es nulo ( a trax69 le pasa mucho ) */
-		if (obj.botKey == null) { 
-			Console.WriteLine("Couldn't detect botTokenKey, please insert it now: ");
-			obj.botKey = Console.ReadLine();
-			Console.WriteLine("Is this your token ?(Y/N): " + obj.botKey);
-			if (Console.ReadKey().Key == ConsoleKey.Y) {
-				obj.saveSettings("key", obj.botKey);
-				Console.WriteLine("Your token has been saved !");
-			}
-			else { 
-				Console.WriteLine("We are sorry to hear that, please start again the app.");
-			}
-		}
+		/* Si el token es nulo */
+		obj.checkToken (obj.botKey, obj);
 
+		Console.Write ("Starting bot... ");
+		// Asignar el valor del token al bot y asignar el bot a una variable
 		var bot = new TelegramBotClient (obj.botKey);
+
 		// Ponerle nombre a la consola
-		Console.Title = bot.GetMeAsync().Result.Username;
+		Console.Title = bot.GetMeAsync().Result.Username + " - Listening";
+
+		/* Iniciar Bot*/
 		bot.StartReceiving ();
 		bot.OnMessage += Bot_OnMessage;
 		bot.OnMessageEdited += Bot_OnMessage;
 
+		Console.WriteLine ("OK.");
+
 		/* Especifico para Windows para que no se cierre automaticamente la ventana */
-		Console.Write("\nPress ENTER to STOP the bot and EXIT.");
+		Console.WriteLine("\nPress ENTER to STOP the bot and EXIT.");
 		Console.ReadLine();
 		// Parar el bot !
 		bot.StopReceiving();
@@ -68,39 +64,88 @@ class nasBot {
 	static void Bot_OnMessage (object sender, Telegram.Bot.Args.MessageEventArgs e) {
 		// Crea un nuevo objeto TelegramBotClient apartir del sender para poder hacer cosas con los mensajes
 		var bot = (TelegramBotClient)sender;
+		Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup keyboard = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup();
 		// Bloque debug para la APP
-		Console.WriteLine ("Message Received: ");
-		Console.WriteLine ("ChatID: " + e.Message.Chat.Id);
-		Console.WriteLine ("MessageID: " + e.Message.MessageId);
-		Console.WriteLine ("FromID: " + e.Message.From.Id);
-		Console.WriteLine ("Message: " + e.Message.Text);
-		Console.WriteLine(" ");
+		Console.WriteLine ("Message Received(" +
+			"ID: " + e.Message.MessageId +
+			" ChatID: " + e.Message.Chat.Id +
+			" FromID: " + e.Message.From.Id +
+			") Message: " + e.Message.Text + "\n");
 
-		/* ------------------- EJEMPLO DE TECLADO 
-		var keyboard = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup(new[] {
-			new[] { // Primera fila de opciones
-				new Telegram.Bot.Types.KeyboardButton("Primero")
-			},
-			new[] { // Segunda fila de opciones
-				new Telegram.Bot.Types.KeyboardButton("Segundo"),
-				new Telegram.Bot.Types.KeyboardButton("Tercero")
-			}
-		});
-		keyboard.OneTimeKeyboard = true;
-		keyboard.ResizeKeyboard = true;
-		keyboard.Selective = true;
-		// Manda mensaje con teclado custom
-		bot.SendTextMessageAsync (e.Message.Chat.Id, e.Message.Text, true, true,replyMarkup: keyboard);
-		*/
+		if (e.Message.Text.StartsWith ("/")) {
+			keyboard = makeKeyboard (e.Message.Text);
+		} else {
+			keyboard = makeKeyboard ("default");
+		}
+			
+		bot.SendTextMessageAsync (e.Message.Chat.Id, e.Message.Text, replyMarkup: keyboard);
 
-		// Devuelve el mensaje que le ha llegado a quien se lo haya mandado
-		bot.SendTextMessageAsync(e.Message.Chat.Id, e.Message.Text);
-		// Libera el espacio del objeto bot, se crea cada vez que se recibe un mensaje
 		bot = null;
 	}
 
+	private static Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup makeKeyboard(string menu) {
+		var reply = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup();
+		reply.OneTimeKeyboard = true;
+		reply.ResizeKeyboard = true;
+		reply.Selective = true;
+
+		switch (menu) {
+		case "/start":
+			reply.Keyboard = new[] {
+				new[] {
+					new KeyboardButton("/caca"),
+					new KeyboardButton("/culo")
+				},
+				new[] {
+					new KeyboardButton("/pedo"),
+					new KeyboardButton("/pis")
+				}
+			};
+			break;
+		case "default":
+			reply.Keyboard = new[] {
+				new[] {
+					new KeyboardButton("/start")
+				}
+			};
+			break;
+		}
+
+		return reply;
+	}
+
+	/* Metodo para comprobar que el token es correcto */
+	private void checkToken(string token, nasBot obj) {
+		Console.Write ("Checking bot token... ");
+		// Probar si el token no es nulo y si contiene ':'
+		if (token != null && token.Contains (":")) {
+			try {
+				TelegramBotClient bot = new TelegramBotClient (token);
+				if (bot.TestApiAsync().Result) {
+					Console.WriteLine ("OK.");
+				}
+			} catch (System.ArgumentException) {
+				obj.checkToken (null, obj);
+			}
+		} else {
+			Console.WriteLine ("Fail.");
+			Console.WriteLine ("Couldn't detect bot Token, please write it now: ");
+			string botToken = Console.ReadLine ();
+			Console.WriteLine ("Is this your token ? (Y/N): " + botToken);
+			// Comprobar que ha escrito la Y
+			if (Console.ReadKey ().Key == ConsoleKey.Y) {
+				obj.botKey = botToken;
+				obj.saveSettings ("key", botToken);
+				Console.WriteLine ("Token (" + botToken + ") saved !");
+				obj.checkToken (botToken, obj);
+			} else {
+				obj.checkToken (null, obj);
+			}
+		}
+	}
+
 	private void loadConfig(nasBot obj) {
-		Console.Write ("Reading configuration from files... ");
+		Console.Write ("Reading configuration files... ");
 		obj.botKey = obj.loadSetting ("key");
 		Console.Write ("OK");
 		Console.WriteLine (" ");
