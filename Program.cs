@@ -12,6 +12,7 @@ class nasBot {
 	public static void Main(string[] args) {
 
 		/* Crear una instancia del objeto para poder acceder a los metodos privados */
+		Console.Clear();
 		var obj = new nasBot ();
 
 		/* Recorrer los argumentos pasados a la app */
@@ -51,7 +52,9 @@ class nasBot {
 		bot.OnMessage += Bot_OnMessage;
 		bot.OnMessageEdited += Bot_OnMessage;
 
+		Console.ForegroundColor = ConsoleColor.DarkGreen;
 		Console.WriteLine ("OK.");
+		Console.ResetColor();
 
 		/* Especifico para Windows para que no se cierre automaticamente la ventana */
 		Console.WriteLine("\nPress ENTER to STOP the bot and EXIT.");
@@ -122,13 +125,19 @@ class nasBot {
 			try {
 				TelegramBotClient bot = new TelegramBotClient (token);
 				if (bot.TestApiAsync().Result) {
-					Console.WriteLine ("OK.");
+					// Añadidos colorines al OK
+					Console.ForegroundColor = ConsoleColor.DarkGreen;
+					Console.WriteLine("OK.");
+					Console.ResetColor();
 				}
 			} catch (System.ArgumentException) {
 				obj.checkToken (null, obj);
 			}
 		} else {
-			Console.WriteLine ("Fail.");
+			// Añadidos colorines al Fail
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine("Fail.");
+			Console.ResetColor();
 			Console.WriteLine ("Couldn't detect bot Token, please write it now: ");
 			string botToken = Console.ReadLine ();
 			Console.WriteLine ("Is this your token ? (Y/N): " + botToken);
@@ -147,8 +156,10 @@ class nasBot {
 	private void loadConfig(nasBot obj) {
 		Console.Write ("Reading configuration files... ");
 		obj.botKey = obj.loadSetting ("key");
-		Console.Write ("OK");
-		Console.WriteLine (" ");
+		// Añadidos colorines al OK
+		Console.ForegroundColor = ConsoleColor.DarkGreen;
+		Console.WriteLine("OK.");
+		Console.ResetColor();
 	}
 
 	private void saveSettings(string index, string value) {
