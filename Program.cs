@@ -69,11 +69,11 @@ class nasBot {
 		var bot = (TelegramBotClient)sender;
 		Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup keyboard = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup();
 		// Bloque debug para la APP
-		Console.WriteLine ("Message Received(" +
+		Console.WriteLine ("Message(" +
 			"ID: " + e.Message.MessageId +
 			" ChatID: " + e.Message.Chat.Id +
 			" FromID: " + e.Message.From.Id +
-			") Message: " + e.Message.Text + "\n");
+			"): " + e.Message.Text + "\n");
 
 		if (e.Message.Text.StartsWith ("/")) {
 			keyboard = makeKeyboard (e.Message.Text);
@@ -125,7 +125,7 @@ class nasBot {
 			try {
 				TelegramBotClient bot = new TelegramBotClient (token);
 				if (bot.TestApiAsync().Result) {
-					// Añadidos colorines al OK
+					// Añadidos colorines al OK.
 					Console.ForegroundColor = ConsoleColor.DarkGreen;
 					Console.WriteLine("OK.");
 					Console.ResetColor();
@@ -134,10 +134,11 @@ class nasBot {
 				obj.checkToken (null, obj);
 			}
 		} else {
-			// Añadidos colorines al Fail
+			// Añadidos colorines al Fail.
 			Console.ForegroundColor = ConsoleColor.Red;
 			Console.WriteLine("Fail.");
 			Console.ResetColor();
+
 			Console.WriteLine ("Couldn't detect bot Token, please write it now: ");
 			string botToken = Console.ReadLine ();
 			Console.WriteLine ("Is this your token ? (Y/N): " + botToken);
