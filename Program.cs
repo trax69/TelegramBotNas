@@ -9,20 +9,23 @@ using Telegram.Bot.Types;
 class nasBot {
 
 	string botKey = "";
-	public static void Main(string[] args) {
-
+	public static void Main(string[] args) 
+	{
 		/* Crear una instancia del objeto para poder acceder a los metodos privados */
 		Console.Clear();
 		var obj = new nasBot ();
 
 		/* Recorrer los argumentos pasados a la app */
-		foreach (string arg in args) {
+		foreach (string arg in args) 
+		{
 			// Si los argumentos contienen un igual EJ: Key=Value
-			if (arg.Contains ("=")) {
+			if (arg.Contains ("key=")) 
+			{
 				// Separa el string en un array dividiendo por el '='
 				string[] data = arg.Split ((char)'=');
 				// Si la primera parte del array contiene 'key', asignamos en los ajustes
-				if (data [0].Contains ("key")) {
+				if (data [0].Contains ("key")) 
+				{
 					obj.saveSettings ("key", data[1]);
 					// Salir del programa, no necesitamos que siga, solo es para escribir la clave
 					Console.WriteLine("The key has been successfully saved !");
@@ -68,7 +71,8 @@ class nasBot {
 		Environment.Exit(0);
 	}
 
-	static void Bot_OnMessage (object sender, Telegram.Bot.Args.MessageEventArgs e) {
+	static void Bot_OnMessage (object sender, Telegram.Bot.Args.MessageEventArgs e) 
+	{
 		// Crea un nuevo objeto TelegramBotClient apartir del sender para poder hacer cosas con los mensajes
 		var bot = (TelegramBotClient)sender;
 		Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup keyboard = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup();
@@ -79,9 +83,12 @@ class nasBot {
 			" FromID: " + e.Message.From.Id +
 			"): " + e.Message.Text + "\n");
 
-		if (e.Message.Text.StartsWith ("/")) {
+		if (e.Message.Text.StartsWith("/", StringComparison.Ordinal)) 
+		{
 			keyboard = makeKeyboard (e.Message.Text);
-		} else {
+		} 
+		else 
+		{
 			keyboard = makeKeyboard ("default");
 		}
 			
@@ -90,7 +97,8 @@ class nasBot {
 		bot = null;
 	}
 
-	private static Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup makeKeyboard(string menu) {
+	private static Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup makeKeyboard(string menu) 
+	{
 		var reply = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup();
 		reply.OneTimeKeyboard = true;
 		reply.ResizeKeyboard = true;
@@ -98,20 +106,25 @@ class nasBot {
 
 		switch (menu) {
 		case "/start":
-			reply.Keyboard = new[] {
-				new[] {
+			reply.Keyboard = new[] 
+			{
+				new[] 
+				{
 					new KeyboardButton("/caca"),
 					new KeyboardButton("/culo")
 				},
-				new[] {
+				new[] 
+				{
 					new KeyboardButton("/pedo"),
 					new KeyboardButton("/pis")
 				}
 			};
 			break;
 		case "default":
-			reply.Keyboard = new[] {
-				new[] {
+			reply.Keyboard = new[] 
+			{
+				new[] 
+				{
 					new KeyboardButton("/start")
 				}
 			};
@@ -121,23 +134,32 @@ class nasBot {
 		return reply;
 	}
 
+
 	/* Metodo para comprobar que el token es correcto */
-	private void checkToken(string token, nasBot obj) {
+	private void checkToken(string token, nasBot obj) 
+	{
 		Console.Write ("Checking bot token... ");
 		// Probar si el token no es nulo y si contiene ':'
-		if (token != null && token.Contains (":")) {
-			try {
+		if (token != null && token.Contains (":")) 
+		{
+			try 
+			{
 				TelegramBotClient bot = new TelegramBotClient (token);
-				if (bot.TestApiAsync().Result) {
+				if (bot.TestApiAsync().Result) 
+				{
 					// Añadidos colorines al OK.
 					Console.ForegroundColor = ConsoleColor.DarkGreen;
 					Console.WriteLine("OK.");
 					Console.ResetColor();
 				}
-			} catch (System.ArgumentException) {
+			} 
+			catch (System.ArgumentException) 
+			{
 				obj.checkToken (null, obj);
 			}
-		} else {
+		} 
+		else 
+		{
 			// Añadidos colorines al Fail.
 			Console.ForegroundColor = ConsoleColor.Red;
 			Console.WriteLine("Fail.");
@@ -152,9 +174,12 @@ class nasBot {
 				obj.saveSettings ("key", botToken);
 				Console.WriteLine ("Token (" + botToken + ") saved !");
 				obj.checkToken (botToken, obj);
-			} else {
-				obj.checkToken (null, obj);
-			}
+		} 
+		else 
+		{
+			obj.checkToken (null, obj);
+		}
+
 		}
 	}
 
@@ -167,14 +192,16 @@ class nasBot {
 		Console.ResetColor();
 	}
 
-	private void saveSettings(string index, string value) {
+	private void saveSettings(string index, string value) 
+	{
 		Configuration config = ConfigurationManager.OpenExeConfiguration (ConfigurationUserLevel.None);
 		config.AppSettings.Settings.Remove (index);
 		config.AppSettings.Settings.Add (index, value);
 		config.Save (ConfigurationSaveMode.Modified);
 	}
 
-	private string loadSetting(string index) {
+	private string loadSetting(string index) 
+	{
 		return ConfigurationManager.AppSettings[index];
 	}
 }
