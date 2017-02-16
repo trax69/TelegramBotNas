@@ -57,7 +57,11 @@ class nasBot {
 		Console.ResetColor();
 
 		/* Especifico para Windows para que no se cierre automaticamente la ventana */
+		Console.BackgroundColor = ConsoleColor.White;
+		Console.ForegroundColor = ConsoleColor.Black;
 		Console.WriteLine("\nPress ENTER to STOP the bot and EXIT.");
+		Console.ResetColor();
+		// Qué la consola no se cierre
 		Console.ReadLine();
 		// Parar el bot !
 		bot.StopReceiving();
