@@ -4,10 +4,11 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Estado de Projects">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Estado de nasBot">
     <Files>
-      <File FileName="Program.cs" Line="208" Column="1" />
-      <File FileName="Estado de Projects" />
+      <File FileName="Program.cs" Line="46" Column="28" />
+      <File FileName="consoleTweaks.cs" Line="3" Column="27" />
+      <File FileName="Estado de nasBot" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.ItemProperties.nasBot PreferredExecutionTarget="MonoDevelop.Default" />

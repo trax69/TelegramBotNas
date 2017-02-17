@@ -8,29 +8,32 @@ using Telegram.Bot.Types;
 
 class nasBot {
 
-	string botKey = "";
+	static string botKey;
 	public static void Main(string[] args) 
 	{
-		/* Crear una instancia del objeto para poder acceder a los metodos privados */
+		/* Limpiar la consola */
 		Console.Clear();
-		var obj = new nasBot ();
 
 		/* Recorrer los argumentos pasados a la app */
 		foreach (string arg in args) 
 		{
 			// Si los argumentos contienen un igual EJ: Key=Value
-			if (arg.Contains ("key=")) 
+			if (arg.Contains("key=") || arg.Contains("pW="))
 			{
 				// Separa el string en un array dividiendo por el '='
-				string[] data = arg.Split ((char)'=');
+				string[] data = arg.Split((char)'=');
 				// Si la primera parte del array contiene 'key', asignamos en los ajustes
-				if (data [0].Contains ("key")) 
+				if (data[0].Contains("key"))
 				{
-					obj.saveSettings ("key", data[1]);
-					// Salir del programa, no necesitamos que siga, solo es para escribir la clave
+					saveSettings("key", data[1]);
 					Console.WriteLine("The key has been successfully saved !");
-					Environment.Exit (0);
 				}
+				else if (data[0].Contains("pW")) 
+				{
+					saveSettings("pW", data[1]);
+					Console.WriteLine("The password has been successfully saved !");
+				} 
+				Environment.Exit(0);
 			}
 		}
 
@@ -38,14 +41,14 @@ class nasBot {
 		Console.WriteLine("Welcome to Telegram Bot App !");
 
 		/* Cargar configuración del bot */
-		obj.loadConfig (obj);
+		botKey = loadConfig ();
 
 		/* Si el token es nulo */
-		obj.checkToken (obj.botKey, obj);
+		checkToken (botKey);
 
 		Console.Write ("Starting bot... ");
 		// Asignar el valor del token al bot y asignar el bot a una variable
-		var bot = new TelegramBotClient (obj.botKey);
+		var bot = new TelegramBotClient (botKey);
 
 		// Ponerle nombre a la consola
 		Console.Title = bot.GetMeAsync().Result.Username + " - Listening";
@@ -136,7 +139,7 @@ class nasBot {
 
 
 	/* Metodo para comprobar que el token es correcto */
-	private void checkToken(string token, nasBot obj) 
+	private static void checkToken(string token) 
 	{
 		Console.Write ("Checking bot token... ");
 		// Probar si el token no es nulo y si contiene ':'
@@ -144,7 +147,7 @@ class nasBot {
 		{
 			try 
 			{
-				TelegramBotClient bot = new TelegramBotClient (token);
+				var bot = new TelegramBotClient (token);
 				if (bot.TestApiAsync().Result) 
 				{
 					// Añadidos colorines al OK.
@@ -155,7 +158,7 @@ class nasBot {
 			} 
 			catch (System.ArgumentException) 
 			{
-				obj.checkToken (null, obj);
+				checkToken (null);
 			}
 		} 
 		else 
@@ -167,32 +170,32 @@ class nasBot {
 
 			Console.WriteLine ("Couldn't detect bot Token, please write it now: ");
 			string botToken = Console.ReadLine ();
-			Console.WriteLine ("Is this your token ? (Y/N): " + botToken);
+			Console.Write ("Is the token correct ? (Y/N): ");
 			// Comprobar que ha escrito la Y
 			if (Console.ReadKey ().Key == ConsoleKey.Y) {
-				obj.botKey = botToken;
-				obj.saveSettings ("key", botToken);
+				Console.WriteLine(" ");
+				saveSettings ("key", botToken);
 				Console.WriteLine ("Token (" + botToken + ") saved !");
-				obj.checkToken (botToken, obj);
+				checkToken (botToken);
 		} 
 		else 
 		{
-			obj.checkToken (null, obj);
+			checkToken (null);
 		}
 
 		}
 	}
 
-	private void loadConfig(nasBot obj) {
-		Console.Write ("Reading configuration files... ");
-		obj.botKey = obj.loadSetting ("key");
+	private static string loadConfig() {
+		Console.Write("Reading configuration files... ");
 		// Añadidos colorines al OK
 		Console.ForegroundColor = ConsoleColor.DarkGreen;
 		Console.WriteLine("OK.");
 		Console.ResetColor();
+		return loadSetting("key");
 	}
 
-	private void saveSettings(string index, string value) 
+	private static void saveSettings(string index, string value) 
 	{
 		Configuration config = ConfigurationManager.OpenExeConfiguration (ConfigurationUserLevel.None);
 		config.AppSettings.Settings.Remove (index);
@@ -200,7 +203,7 @@ class nasBot {
 		config.Save (ConfigurationSaveMode.Modified);
 	}
 
-	private string loadSetting(string index) 
+	private static string loadSetting(string index) 
 	{
 		return ConfigurationManager.AppSettings[index];
 	}

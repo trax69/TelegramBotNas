@@ -1,8 +1,6 @@
 ﻿using System;
 
-namespace nasBot {
-	public class ConsoleGadget {
+public class consoleTweaks {
 		
-	}
 }
 
