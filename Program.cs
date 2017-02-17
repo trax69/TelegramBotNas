@@ -116,33 +116,45 @@ class nasBot {
 		reply.Selective = true;
 
 		switch (menu) {
-		case "/start":
-			reply.Keyboard = new[] 
-			{
-				new[] 
+			case "/start":
+				reply.Keyboard = new[] 
 				{
-					new KeyboardButton("/caca"),
-					new KeyboardButton("/culo")
-				},
-				new[] 
-				{
-					new KeyboardButton("/pedo"),
-					new KeyboardButton("/pis")
-				}
-			};
+					new[] 
+					{
+						new KeyboardButton("/server"),
+						new KeyboardButton("/data"),
+						new KeyboardButton("/torrent")
+					}
+				};
 
-			bot.SendTextMessageAsync(chatID, "<i>Activando sistemas </i><b>!</b>", replyMarkup: reply, parseMode: ParseMode.Html);
+				bot.SendTextMessageAsync(chatID, "<i>Activando sistemas </i><b>!</b>", replyMarkup: reply, parseMode: ParseMode.Html);
 			break;
-		case "default":
-			reply.Keyboard = new[] 
-			{
-				new[] 
+				
+			case "default":
+				reply.Keyboard = new[] 
 				{
-					new KeyboardButton("/start")
-				}
-			};
+					new[] 
+					{
+						new KeyboardButton("/start")
+					}
+				};
 
-			bot.SendTextMessageAsync(chatID, "<b>Comando no reconocido</b>, <i>porfavor vuelve a empezar</i>.", replyMarkup: reply, parseMode: ParseMode.Html);
+				bot.SendTextMessageAsync(chatID, "<b>Comando no reconocido</b>, <i>porfavor vuelve a empezar</i>.", replyMarkup: reply, parseMode: ParseMode.Html);
+			break;
+
+			case "/server":
+				reply.Keyboard = new[]
+				{
+					new[]
+					{
+						new KeyboardButton("/startServer"),
+						new KeyboardButton("/stopServer"),
+						new KeyboardButton("/pingServer"),
+						new KeyboardButton("/deleteServer")
+					}
+				};
+
+				bot.SendTextMessageAsync(chatID, "<i>Sección</i> <b>Server</b>", replyMarkup: reply, parseMode: ParseMode.Html);
 			break;
 		}
 	}
