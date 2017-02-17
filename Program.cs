@@ -8,19 +8,20 @@ using Telegram.Bot.Helpers;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-class nasBot {
+class nasBot
+{
 
 	static string botKey; // Variable que guarda el token del bot
 	static string pW; // Variable que guarda la contraseña de comandos
 	static List<long> authID; // Variable que guarda las personas autenticadas
 
-	public static void Main(string[] args) 
+	public static void Main(string[] args)
 	{
 		/* Limpiar la consola */
 		Console.Clear();
 
 		/* Recorrer los argumentos pasados a la app */
-		foreach (string arg in args) 
+		foreach (string arg in args)
 		{
 			// Si los argumentos contienen un igual EJ: Key=Value
 			if (arg.Contains("key=") || arg.Contains("pW="))
@@ -33,11 +34,11 @@ class nasBot {
 					saveSettings("key", data[1]);
 					Console.WriteLine("The key has been successfully saved !");
 				}
-				else if (data[0].Contains("pW")) 
+				else if (data[0].Contains("pW"))
 				{
 					saveSettings("pW", data[1]);
 					Console.WriteLine("The password has been successfully saved !");
-				} 
+				}
 				Environment.Exit(0);
 			}
 		}
@@ -49,27 +50,27 @@ class nasBot {
 		loadConfig();
 
 		/* Comprobación del token del bot */
-		checkToken (botKey);
+		checkToken(botKey);
 
 		/* Comprobación de la contraseña de autenticación */
 		checkAuth(pW);
 
-		Console.Write ("Starting bot... ");
+		Console.Write("Starting bot... ");
 		// Asignar el valor del token al bot y asignar el bot a una variable
-		var bot = new TelegramBotClient (botKey);
+		var bot = new TelegramBotClient(botKey);
 
 		// Ponerle nombre a la consola
 		Console.Title = bot.GetMeAsync().Result.Username + " - Listening";
 
 		/* Iniciar Bot*/
-		bot.StartReceiving ();
+		bot.StartReceiving();
 
 		/* Hacer que cuando se disparen los eventos llamen a un método */
 		bot.OnMessage += Bot_OnMessage;
 		bot.OnMessageEdited += Bot_OnMessage;
 
 		Console.ForegroundColor = ConsoleColor.DarkGreen;
-		Console.WriteLine ("OK.");
+		Console.WriteLine("OK.");
 		Console.ResetColor();
 
 		/* Especifico para Windows para que no se cierre automaticamente la ventana */
@@ -86,37 +87,36 @@ class nasBot {
 
 	static bool isAuth = false; // Variable que guarda si el usuario está en proceso de autenticación
 
-	static void Bot_OnMessage (object sender, Telegram.Bot.Args.MessageEventArgs e) 
+	static void Bot_OnMessage(object sender, Telegram.Bot.Args.MessageEventArgs e)
 	{
 		// Crea un nuevo objeto TelegramBotClient apartir del sender para poder hacer cosas con los mensajes
 		var bot = (TelegramBotClient)sender;
 		// Bloque debug para la APP
-		Console.WriteLine ("Message(" +
+		Console.WriteLine("Message(" +
 			"ID: " + e.Message.MessageId +
 			" ChatID: " + e.Message.Chat.Id +
 			" FromID: " + e.Message.From.Id +
 			"): " + e.Message.Text);
 
-		if (e.Message.Text.StartsWith("/", StringComparison.OrdinalIgnoreCase)) 
+		if (e.Message.Text.StartsWith("/", StringComparison.OrdinalIgnoreCase))
 		{
-			sendWithKeyboard (e.Message.Text, e.Message.Chat.Id ,bot);
-		} 
-		else 
+			sendWithKeyboard(e.Message.Text, e.Message.Chat.Id, bot);
+		}
+		else
 		{
 			if (isAuth)
 			{
 				if (e.Message.Text == pW)
 				{
-					isAuth = false;
 					authID.Add(e.Message.From.Id);
 					sendWithKeyboard("authOK", e.Message.Chat.Id, bot);
 				}
-				else 
+				else
 				{
 					sendWithKeyboard("authFail", e.Message.Chat.Id, bot);
 				}
-			} 
-			else 
+			}
+			else
 			{
 				sendWithKeyboard("default", e.Message.Chat.Id, bot);
 			}
@@ -125,18 +125,19 @@ class nasBot {
 		bot = null;
 	}
 
-	private static void sendWithKeyboard(string menu, long chatID, TelegramBotClient bot) 
+	private static void sendWithKeyboard(string menu, long chatID, TelegramBotClient bot)
 	{
 		var reply = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup();
 		reply.OneTimeKeyboard = true;
 		reply.ResizeKeyboard = true;
 		reply.Selective = true;
 
-		switch (menu) {
+		switch (menu)
+		{
 			case "/start":
-				reply.Keyboard = new[] 
+				reply.Keyboard = new[]
 				{
-					new[] 
+					new[]
 					{
 						new KeyboardButton("/server"),
 						new KeyboardButton("/auth"),
@@ -145,19 +146,19 @@ class nasBot {
 				};
 
 				bot.SendTextMessageAsync(chatID, "<i>Activando sistemas </i><b>!</b>", replyMarkup: reply, parseMode: ParseMode.Html);
-			break;
-				
+				break;
+
 			case "default":
-				reply.Keyboard = new[] 
+				reply.Keyboard = new[]
 				{
-					new[] 
+					new[]
 					{
 						new KeyboardButton("/start")
 					}
 				};
 
 				bot.SendTextMessageAsync(chatID, "<b>Comando no reconocido</b>, <i>porfavor vuelve a empezar</i>.", replyMarkup: reply, parseMode: ParseMode.Html);
-			break;
+				break;
 
 			case "/server":
 				reply.Keyboard = new[]
@@ -172,75 +173,76 @@ class nasBot {
 				};
 
 				bot.SendTextMessageAsync(chatID, "<i>Sección</i> <b>Server</b>", replyMarkup: reply, parseMode: ParseMode.Html);
-			break;
+				break;
 
 			case "/auth":
 				isAuth = true;
-
 				bot.SendTextMessageAsync(chatID, "<i>Porfavor introduce la contraseña</i>", parseMode: ParseMode.Html);
-			break;
+				break;
 
 			case "authOk":
 				isAuth = false;
 				bot.SendTextMessageAsync(chatID, "<i>Estás logueado</i>", parseMode: ParseMode.Html);
-			break;
-
+				break;
+				
 			case "authFail":
 				isAuth = false;
 				bot.SendTextMessageAsync(chatID, "<i>Contraseña incorrecta NO.OB</i>", parseMode: ParseMode.Html);
-			break;
+				break;
 		}
 	}
 
 
 	/* Metodo para comprobar que el token es correcto */
-	private static void checkToken(string token) 
+	private static void checkToken(string token)
 	{
-		Console.Write ("Checking bot token... ");
+		Console.Write("Checking bot token... ");
 		// Probar si el token no es nulo y si contiene ':'
-		if (token != null && token.Contains (":")) 
+		if (token != null && token.Contains(":"))
 		{
-			try 
+			try
 			{
-				var bot = new TelegramBotClient (token);
-				if (bot.TestApiAsync().Result) 
+				var bot = new TelegramBotClient(token);
+				if (bot.TestApiAsync().Result)
 				{
 					// Añadidos colorines al OK.
 					Console.ForegroundColor = ConsoleColor.DarkGreen;
 					Console.WriteLine("OK.");
 					Console.ResetColor();
 				}
-			} 
-			catch (System.ArgumentException) 
-			{
-				checkToken (null);
 			}
-		} 
-		else 
+			catch (System.ArgumentException)
+			{
+				checkToken(null);
+			}
+		}
+		else
 		{
 			// Añadidos colorines al Fail.
 			Console.ForegroundColor = ConsoleColor.Red;
 			Console.WriteLine("Fail.");
 			Console.ResetColor();
 
-			Console.WriteLine ("Couldn't detect bot Token, please write it now: ");
-			botKey = Console.ReadLine ();
-			Console.Write ("Is the token correct ? (Y/N): ");
+			Console.WriteLine("Couldn't detect bot Token, please write it now: ");
+			botKey = Console.ReadLine();
+			Console.Write("Is the token correct ? (Y/N): ");
 			// Comprobar que ha escrito la Y
-			if (Console.ReadKey ().Key == ConsoleKey.Y) {
-				Console.WriteLine(" ");
-				saveSettings ("key", botKey);
-				Console.WriteLine ("Token (" + botKey + ") saved !");
-				checkToken (botKey);
-			} 
-			else 
+			if (Console.ReadKey().Key == ConsoleKey.Y)
 			{
-				checkToken (null);
+				Console.WriteLine(" ");
+				saveSettings("key", botKey);
+				Console.WriteLine("Token (" + botKey + ") saved !");
+				checkToken(botKey);
+			}
+			else
+			{
+				checkToken(null);
 			}
 		}
 	}
 
-	private static void checkAuth(string passWord) {
+	private static void checkAuth(string passWord)
+	{
 		Console.Write("Checking auth password... ");
 		if (passWord == null)
 		{
@@ -264,7 +266,7 @@ class nasBot {
 				checkAuth(null);
 			}
 		}
-		else 
+		else
 		{
 			// Añadidos colorines al OK.
 			Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -278,7 +280,8 @@ class nasBot {
 		}
 	}
 
-	private static void loadConfig() {
+	private static void loadConfig()
+	{
 		Console.Write("Reading configuration files... ");
 		// Asignación de variables
 		botKey = loadSetting("key");
@@ -289,15 +292,15 @@ class nasBot {
 		Console.ResetColor();
 	}
 
-	private static void saveSettings(string index, string value) 
+	private static void saveSettings(string index, string value)
 	{
-		Configuration config = ConfigurationManager.OpenExeConfiguration (ConfigurationUserLevel.None);
-		config.AppSettings.Settings.Remove (index);
-		config.AppSettings.Settings.Add (index, value);
-		config.Save (ConfigurationSaveMode.Modified);
+		Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+		config.AppSettings.Settings.Remove(index);
+		config.AppSettings.Settings.Add(index, value);
+		config.Save(ConfigurationSaveMode.Modified);
 	}
 
-	private static string loadSetting(string index) 
+	private static string loadSetting(string index)
 	{
 		return ConfigurationManager.AppSettings[index];
 	}
