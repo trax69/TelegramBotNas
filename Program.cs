@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -11,7 +12,7 @@ class nasBot {
 
 	static string botKey; // Variable que guarda el token del bot
 	static string pW; // Variable que guarda la contraseña de comandos
-	static long[] authID; // Variable que guarda las personas autenticadas
+	static List<long> authID; // Variable que guarda las personas autenticadas
 
 	public static void Main(string[] args) 
 	{
@@ -83,7 +84,7 @@ class nasBot {
 		Environment.Exit(0);
 	}
 
-	static bool isAuth; // Variable que guarda si el usuario está en proceso de autenticación
+	static bool isAuth = false; // Variable que guarda si el usuario está en proceso de autenticación
 
 	static void Bot_OnMessage (object sender, Telegram.Bot.Args.MessageEventArgs e) 
 	{
@@ -102,7 +103,23 @@ class nasBot {
 		} 
 		else 
 		{
-			sendWithKeyboard("default", e.Message.Chat.Id, bot);
+			if (isAuth)
+			{
+				if (e.Message.Text == pW)
+				{
+					isAuth = false;
+					authID.Add(e.Message.From.Id);
+					sendWithKeyboard("authOK", e.Message.Chat.Id, bot);
+				}
+				else 
+				{
+					sendWithKeyboard("authFail", e.Message.Chat.Id, bot);
+				}
+			} 
+			else 
+			{
+				sendWithKeyboard("default", e.Message.Chat.Id, bot);
+			}
 		}
 
 		bot = null;
@@ -155,6 +172,21 @@ class nasBot {
 				};
 
 				bot.SendTextMessageAsync(chatID, "<i>Sección</i> <b>Server</b>", replyMarkup: reply, parseMode: ParseMode.Html);
+			break;
+
+			case "/auth":
+				isAuth = true;
+				bot.SendTextMessageAsync(chatID, "<i>Porfavor introduce la contraseña</i>", replyMarkup: reply, parseMode: ParseMode.Html);
+			break;
+
+			case "authOk":
+				isAuth = false;
+				bot.SendTextMessageAsync(chatID, "<i>Estás logueado</i>", replyMarkup: reply, parseMode: ParseMode.Html);
+			break;
+
+			case "authFail":
+				isAuth = false;
+				bot.SendTextMessageAsync(chatID, "<i>Contraseña incorrecta NO.OB</i>", replyMarkup: reply, parseMode: ParseMode.Html);
 			break;
 		}
 	}
@@ -235,7 +267,12 @@ class nasBot {
 		{
 			// Añadidos colorines al OK.
 			Console.ForegroundColor = ConsoleColor.DarkGreen;
-			Console.WriteLine("OK.");
+			Console.Write("OK. ");
+			Console.ResetColor();
+
+			Console.Write("Password is ");
+			Console.ForegroundColor = ConsoleColor.DarkGreen;
+			Console.WriteLine(pW);
 			Console.ResetColor();
 		}
 	}
