@@ -169,14 +169,14 @@ class nasBot {
 			Console.ResetColor();
 
 			Console.WriteLine ("Couldn't detect bot Token, please write it now: ");
-			string botToken = Console.ReadLine ();
+			botKey = Console.ReadLine ();
 			Console.Write ("Is the token correct ? (Y/N): ");
 			// Comprobar que ha escrito la Y
 			if (Console.ReadKey ().Key == ConsoleKey.Y) {
 				Console.WriteLine(" ");
-				saveSettings ("key", botToken);
-				Console.WriteLine ("Token (" + botToken + ") saved !");
-				checkToken (botToken);
+				saveSettings ("key", botKey);
+				Console.WriteLine ("Token (" + botKey + ") saved !");
+				checkToken (botKey);
 		} 
 		else 
 		{
