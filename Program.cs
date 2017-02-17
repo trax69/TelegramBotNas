@@ -129,8 +129,8 @@ class nasBot {
 					new KeyboardButton("/pis")
 				}
 			};
-
-				bot.SendTextMessageAsync(chatID, "El bot ya se ha puesto en acción, ahora que ?", replyMarkup: reply);
+				var msg = new Message();
+				bot.SendTextMessageAsync(chatID, "<i>Activando sistemas </i><b>!</b>", replyMarkup: reply, parseMode: Telegram.Bot.Types.Enums.ParseMode.Html);
 			break;
 		case "default":
 			reply.Keyboard = new[] 
