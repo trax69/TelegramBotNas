@@ -176,17 +176,18 @@ class nasBot {
 
 			case "/auth":
 				isAuth = true;
-				bot.SendTextMessageAsync(chatID, "<i>Porfavor introduce la contraseña</i>", replyMarkup: reply, parseMode: ParseMode.Html);
+
+				bot.SendTextMessageAsync(chatID, "<i>Porfavor introduce la contraseña</i>", parseMode: ParseMode.Html);
 			break;
 
 			case "authOk":
 				isAuth = false;
-				bot.SendTextMessageAsync(chatID, "<i>Estás logueado</i>", replyMarkup: reply, parseMode: ParseMode.Html);
+				bot.SendTextMessageAsync(chatID, "<i>Estás logueado</i>", parseMode: ParseMode.Html);
 			break;
 
 			case "authFail":
 				isAuth = false;
-				bot.SendTextMessageAsync(chatID, "<i>Contraseña incorrecta NO.OB</i>", replyMarkup: reply, parseMode: ParseMode.Html);
+				bot.SendTextMessageAsync(chatID, "<i>Contraseña incorrecta NO.OB</i>", parseMode: ParseMode.Html);
 			break;
 		}
 	}
