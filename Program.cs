@@ -122,7 +122,7 @@ class nasBot {
 					new[] 
 					{
 						new KeyboardButton("/server"),
-						new KeyboardButton("/data"),
+						new KeyboardButton("/auth"),
 						new KeyboardButton("/torrent")
 					}
 				};
