@@ -5,6 +5,7 @@ using Telegram.Bot.Args;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Helpers;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 class nasBot {
 
@@ -129,8 +130,8 @@ class nasBot {
 					new KeyboardButton("/pis")
 				}
 			};
-				var msg = new Message();
-				bot.SendTextMessageAsync(chatID, "<i>Activando sistemas </i><b>!</b>", replyMarkup: reply, parseMode: Telegram.Bot.Types.Enums.ParseMode.Html);
+
+			bot.SendTextMessageAsync(chatID, "<i>Activando sistemas </i><b>!</b>", replyMarkup: reply, parseMode: ParseMode.Html);
 			break;
 		case "default":
 			reply.Keyboard = new[] 
@@ -141,7 +142,7 @@ class nasBot {
 				}
 			};
 
-				bot.SendTextMessageAsync(chatID, "Comando no reconocido, porfavor vuelve a empezar.", replyMarkup: reply);
+			bot.SendTextMessageAsync(chatID, "<b>Comando no reconocido</b>, <i>porfavor vuelve a empezar</i>.", replyMarkup: reply, parseMode: ParseMode.Html);
 			break;
 		}
 	}
