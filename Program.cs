@@ -9,11 +9,12 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 class nasBot {
-	static string botKey; // Variable que guarda el token del bot
-	static string pW; // Variable que guarda la contraseña de comandos
-	static List<long> authID = new List<long>(); // Variable que guarda las personas autenticadas
+	static string botKey;
+	static string pW;
+	static List<int> authID = new List<int>(); // Variable que guarda las personas autenticadas
 	static appConfig conf = new appConfig();
 	static appCheck chk = new appCheck ();
+	static consoleTweaks text = new consoleTweaks();
 
 	public static void Main(string[] args)
 	{
@@ -32,32 +33,37 @@ class nasBot {
 				if (data[0].Contains("key"))
 				{
 					// Save Token
-					conf.saveSettings(data[1]);
-					Console.WriteLine("The key has been successfully saved !");
+					conf.saveSettings("key", data[1]);
+					text.writeWithColor("The token has been successfully saved !", ConsoleColor.DarkGreen, true);
 				}
 				else if (data[0].Contains("pW"))
 				{
 					// Save passWord
-					conf.saveSettings(data[1]);
-					Console.WriteLine("The password has been successfully saved !");
+					conf.saveSettings("pW",data[1]);
+					text.writeWithColor("The password has been successfully saved !", ConsoleColor.DarkGreen, true);
 				}
 				Environment.Exit(0);
 			}
 		}
 
 		/* Dar la bienvenida al usuario :-) */
-		Console.WriteLine("Welcome to Telegram Bot App !");
+		text.writeWithColor("Welcome to Telegram Bot App !",newLine: true);
 
 		/* Cargar configuración del bot */
-		conf.loadConfig ();
+		botKey = conf.loadConfig ("botKey");
+		pW = conf.loadConfig ("pW");
 
 		/* Comprobación del token del bot */
-		chk.checkToken(botKey);
-
+		while (chk.checkToken (botKey) == false) {
+			botKey = chk.getToken (); // Si la comprobación sale bien asignar el token
+		}
+			
 		/* Comprobación de la contraseña de autenticación */
-		chk.checkAuth(pW);
+		while (chk.checkAuth (pW) == false) {
+			pW = chk.getpW (); // Si la comprobación sale bien asignar la contraseña
+		}
 
-		Console.Write("Starting bot... ");
+		text.writeWithColor("Starting bot... ");
 		// Asignar el valor del token al bot y asignar el bot a una variable
 		var bot = new TelegramBotClient(botKey);
 
@@ -71,15 +77,11 @@ class nasBot {
 		bot.OnMessage += Bot_OnMessage;
 		bot.OnMessageEdited += Bot_OnMessage;
 
-		Console.ForegroundColor = ConsoleColor.DarkGreen;
-		Console.WriteLine("OK.");
-		Console.ResetColor();
+		text.writeWithColor ("Ok. ", ConsoleColor.DarkGreen, true);
 
 		/* Especifico para Windows para que no se cierre automaticamente la ventana */
 		Console.BackgroundColor = ConsoleColor.White;
-		Console.ForegroundColor = ConsoleColor.Black;
-		Console.WriteLine("\nPress ENTER to STOP the bot and EXIT\n");
-		Console.ResetColor();
+		text.writeWithColor ("\nPress ENTER to STOP the bot and EXIT\n", ConsoleColor.Black, true);
 		// Qué la consola no se cierre
 		Console.ReadLine();
 		// Parar el bot !
@@ -109,8 +111,12 @@ class nasBot {
 			{
 				if (e.Message.Text == pW)
 				{
-					authID.Add(e.Message.From.Id);
-					Console.WriteLine ("UserID: " + e.Message.From.Id + " added to the auth list.");
+					if (!authID.Contains (e.Message.From.Id)) {
+						authID.Add (e.Message.From.Id);
+						Console.WriteLine ("UserID: " + e.Message.From.Id + " added to the auth list.");
+					} else {
+						Console.WriteLine ("UserID: " + e.Message.From.Id + " already in the auth list.");
+					}
 					sendWithKeyboard("authOk", e, bot);
 				}
 				else
@@ -138,64 +144,141 @@ class nasBot {
 		reply.Selective = true;
 
 		long chatID = e.Message.Chat.Id;
+		string texto = "";
+		Console.WriteLine ("isAuth: " + authID.Contains(e.Message.From.Id));
 
-
-		switch (menu)
-		{
+		switch (menu) {
 			case "/start":
-				reply.Keyboard = new[]
-				{
-					new[]
-					{
-						new KeyboardButton("/server"),
-						new KeyboardButton("/auth"),
-					}
-				};
-
-				bot.SendTextMessageAsync(chatID, "<i>Activando sistemas </i><b>!</b>", replyMarkup: reply, parseMode: ParseMode.Html);
-				break;
+			reply.Keyboard = new[] {
+				new[] {
+					new KeyboardButton ("/auth")
+				}
+			};
+				
+			bot.SendTextMessageAsync(chatID,"<i>Activando sistemas</i> <b>!</b>", replyMarkup: reply, parseMode: ParseMode.Html);
+			break;
 
 			case "default":
-				reply.Keyboard = new[]
-				{
-					new[]
-					{
-						new KeyboardButton("/start")
-					}
-				};
-
-				bot.SendTextMessageAsync(chatID, "<b>Comando no reconocido</b>, <i>porfavor vuelve a empezar</i>.", replyMarkup: reply, parseMode: ParseMode.Html);
-				break;
+			reply.Keyboard = new[] {
+				new[] {
+					new KeyboardButton ("/start")
+				}
+			};
+			texto = "<b>Comando (" + e.Message.Text + ") no reconocido</b>, <i>porfavor vuelve a empezar</i>.";
+			bot.SendTextMessageAsync(chatID, texto, replyMarkup: reply, parseMode: ParseMode.Html);
+			break;
 
 			case "/server":
-				reply.Keyboard = new[]
-				{
-					new[]
+				if (authID.Contains (e.Message.From.Id)) {
+					reply.Keyboard = new[]
 					{
-						new KeyboardButton("/startServer"),
-						new KeyboardButton("/stopServer"),
-						new KeyboardButton("/pingServer"),
-						new KeyboardButton("/deleteServer")
-					}
-				};
+						new[]
+						{
+							new KeyboardButton("/rebootServer"),
+							new KeyboardButton("/shutdownServer")
+						},
+						new [] {
+							new KeyboardButton("/authMenu")
+						}
+					};
+					
+					texto = "<i>Sección</i> <b>Server</b>";
+				} else {
+					reply.Keyboard = new[]
+					{
+						new[]
+						{
+							new KeyboardButton("/auth"),
+						}
+					};
 
-				bot.SendTextMessageAsync(chatID, "<i>Sección</i> <b>Server</b>", replyMarkup: reply, parseMode: ParseMode.Html);
-				break;
+					texto = "<i>No tienes <b>acceso</b> a este comando</i>";
+				}
+
+				bot.SendTextMessageAsync(chatID, texto, replyMarkup: reply, parseMode: ParseMode.Html);
+			break;
+
+			case "/torrent":
+				if (authID.Contains (e.Message.From.Id)) {
+					reply.Keyboard = new[] {
+						new[] {
+							new KeyboardButton ("/uploadTorrent"),
+							new KeyboardButton ("/listTorrent")
+						},
+						new[] {
+							new KeyboardButton ("/deleteTorrent"),
+							new KeyboardButton ("/checkTorrent")
+						},
+						new [] {
+							new KeyboardButton ("/authMenu")
+						}
+					};
+
+					texto = "<i>Sección</i> <b>Torrent</b>";
+				} else {
+					reply.Keyboard = new[]
+					{
+						new[]
+						{
+							new KeyboardButton("/auth"),
+						}
+					};
+
+					texto = "<i>No tienes <b>acceso</b> a este comando</i>";
+				}
+
+				bot.SendTextMessageAsync(chatID, texto, replyMarkup: reply, parseMode: ParseMode.Html);
+			break;
 
 			case "/auth":
 				isAuth = true;
 				bot.SendTextMessageAsync(chatID, "<i>Porfavor introduce la contraseña</i>", parseMode: ParseMode.Html);
-				break;
+			break;
+
+			case "/authMenu":
+				if (authID.Contains (e.Message.From.Id)) {
+					reply.Keyboard = new[] {
+						new[] {
+							new KeyboardButton ("/server")
+						},
+						new[] {
+							new KeyboardButton ("/torrent"),
+						}
+					};
+
+					texto = "<i>Menú con privilegios</i>";
+				} else {
+					reply.Keyboard = new[]
+					{
+						new[]
+						{
+							new KeyboardButton("/auth"),
+						}
+					};
+
+					texto = "<i>No tienes <b>acceso</b> a este comando</i>";
+				}
+
+				bot.SendTextMessageAsync(chatID, texto, replyMarkup: reply, parseMode: ParseMode.Html);
+			break;
 
 			case "authOk":
+				reply.Keyboard = new[] {
+					new[] {
+						new KeyboardButton ("/server")
+					},
+					new[] {
+						new KeyboardButton ("/torrent"),
+					}
+				};
 				isAuth = false;
-				bot.SendTextMessageAsync(chatID, "<i>Estás logueado</i>", parseMode: ParseMode.Html);
-				break;
+				bot.SendTextMessageAsync(chatID, "<i>Estás logueado</i>", replyMarkup: reply, parseMode: ParseMode.Html);
+			break;
 				
 			case "authFail":
 				isAuth = false;
 				bot.SendTextMessageAsync(chatID, "<i>Contraseña incorrecta NO.OB</i>", parseMode: ParseMode.Html);
-				break;
+			break;
 		}
 	}
 }

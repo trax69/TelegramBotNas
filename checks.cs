@@ -6,107 +6,96 @@ public class appCheck {
 	string botKey;
 	string pW;
 	appConfig conf = new appConfig();
+	consoleTweaks text = new consoleTweaks();
 
-	/* Metodo para comprobar que el token es correcto */
-	public bool checkToken(string token)
-	{
+	public string getToken() {
+		return this.botKey;
+	}
+
+	public string getpW() {
+		return this.pW;
+	}
+
+	/* Crear el token si no existe */
+	private string createToken() {
+		Console.WriteLine("Couldn't detect bot Token, please write it now: ");
+		this.botKey = Console.ReadLine();
+		Console.Write("Is the token correct ? (Y/N): ");
+		// Comprobar que ha escrito la Y
+		if (Console.ReadKey().Key == ConsoleKey.Y) {
+			Console.Write(" ");
+			conf.saveSettings("key", this.botKey);
+
+			// Añadir colorines :D
+			text.writeWithColor ("Saved !", ConsoleColor.DarkGreen, true);
+
+			// Una vez creado el token comprobar si es correcto
+			return this.botKey;
+		} else {
+			return null;
+		}
+	}
+
+	/* Metodo para comprobar que el token es correcto
+		Devuelve el mismo token si es válido o el token creado
+	*/
+	public bool checkToken(string token) {
 		Console.Write("Checking bot token... ");
 		// Probar si el token no es nulo y si contiene ':'
-		if (token != null && token.Contains(":"))
-		{
-			try
-			{
+		if (token.Contains(":")) {
+			try {
 				var bot = new TelegramBotClient(token);
-				if (bot.TestApiAsync().Result)
-				{
+				if (bot.TestApiAsync().Result) {
 					// Añadidos colorines al OK.
-					Console.ForegroundColor = ConsoleColor.DarkGreen;
-					Console.WriteLine("OK.");
-					Console.ResetColor();
+					text.writeWithColor ("Ok. ", ConsoleColor.DarkGreen, true);
 					return true;
 				}
-			}
-			catch (System.ArgumentException)
-			{
-				checkToken(null);
+			} catch (System.ArgumentException) {
+				checkToken(token);
 				return false;
 			}
-		}
-		else
-		{
-			// Añadidos colorines al Fail.
-			Console.ForegroundColor = ConsoleColor.Red;
-			Console.WriteLine("Fail.");
-			Console.ResetColor();
-
-			Console.WriteLine("Couldn't detect bot Token, please write it now: ");
-			botKey = Console.ReadLine();
-			Console.Write("Is the token correct ? (Y/N): ");
-			// Comprobar que ha escrito la Y
-			if (Console.ReadKey().Key == ConsoleKey.Y)
-			{
-				Console.Write(" ");
-				conf.saveSettings(botKey);
-
-				// Añadir colorines :D
-				Console.ForegroundColor = ConsoleColor.DarkGreen;
-				Console.WriteLine("Saved !");
-				Console.ResetColor();
-
-				checkToken(botKey);
-				return false;
-			}
-			else
-			{
-				checkToken(null);
-				return false;
-			}
+		} else if (token == null || token == "") {
+			// Poner color rojo al texto
+			text.writeWithColor ("Fail. ", ConsoleColor.Red, true);
+			this.botKey = createToken ();
+			return false;
 		}
 		return false;
 	}
 
-	public bool checkAuth(string passWord)
-	{
-		Console.Write("Checking auth password... ");
-		if (passWord == null)
-		{
-			// Añadidos colorines al Fail.
-			Console.ForegroundColor = ConsoleColor.Red;
-			Console.WriteLine("Fail.");
-			Console.ResetColor();
+	/* Crear la contraseña si no existe */
+	public string createAuth () {
+		Console.WriteLine("Couldn't detect auth password, please write it now: ");
+		this.pW = Console.ReadLine();
+		Console.Write("Is the password correct ? (Y/N): ");
+		if (Console.ReadKey().Key == ConsoleKey.Y) {
+			Console.Write(" ");
+			conf.saveSettings("pW",this.pW);
 
-			Console.WriteLine("Couldn't detect auth password, please write it now: ");
-			pW = Console.ReadLine();
-			Console.Write("Is the password correct ? (Y/N): ");
-			if (Console.ReadKey().Key == ConsoleKey.Y)
-			{
-				Console.Write(" ");
-				conf.saveSettings(pW);
+			text.writeWithColor("Saved !",ConsoleColor.DarkGreen, true);
 
-				Console.ForegroundColor = ConsoleColor.DarkGreen;
-				Console.WriteLine("Saved !");
-				Console.ResetColor();
-
-				checkAuth(pW);
-				return false;
-			}
-			else
-			{
-				checkAuth(null);
-				return false;
-			}
+			return this.pW;
+		} else {
+			return null;
 		}
-		else
-		{
+	}
+
+	/* Metodo para comprobar que la contraseña es correcta
+		Devuelve la misma contraseña si es válida o la constraseña creada
+	*/
+	public bool checkAuth(string passWord) {
+		Console.Write("Checking auth password... ");
+		if (passWord == null || passWord == "") {
+			// Añadidos colorines al Fail.
+			text.writeWithColor ("Fail. ", ConsoleColor.Red, true);
+			this.pW = createAuth ();
+			return false;
+		} else {
 			// Añadidos colorines al OK.
-			Console.ForegroundColor = ConsoleColor.DarkGreen;
-			Console.Write("OK. ");
-			Console.ResetColor();
+			text.writeWithColor ("Ok. ", ConsoleColor.DarkGreen);
 
 			Console.Write("Password is ");
-			Console.ForegroundColor = ConsoleColor.DarkGreen;
-			Console.WriteLine(pW);
-			Console.ResetColor();
+			text.writeWithColor (passWord, ConsoleColor.DarkGreen, true);
 			return true;
 		}
 	}

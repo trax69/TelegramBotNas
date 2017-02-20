@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Collections;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -9,12 +11,12 @@ public class appConfig {
 	string fileName = "config.json";
 
 	// Guardar la configuración de la aplicación
-	public void saveSettings(string value)
+	public void saveSettings(string index, string value)
 	{
-		var data = new object ();
-		data = value;
+		IDictionary<string,string> data = new Dictionary<string, string>();
+		data [index] = value;
 		var json = JsonConvert.SerializeObject (data);
-		using (StreamWriter file = new StreamWriter (path + fileName)) {
+		using (StreamWriter file = new StreamWriter (path + fileName,true)) {
 			file.WriteLine (json);
 		}
 		/*
@@ -31,7 +33,7 @@ public class appConfig {
 		return "";
 	}
 
-	public void loadConfig()
+	public string loadConfig(string index)
 	{
 		Console.Write("Reading configuration files... ");
 		// Asignación de variables
@@ -41,5 +43,6 @@ public class appConfig {
 		Console.ForegroundColor = ConsoleColor.DarkGreen;
 		Console.WriteLine("OK.");
 		Console.ResetColor();
+		return loadSetting(index);
 	}
 }
