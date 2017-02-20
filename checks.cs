@@ -24,11 +24,7 @@ public class appCheck {
 		// Comprobar que ha escrito la Y
 		if (Console.ReadKey().Key == ConsoleKey.Y) {
 			Console.Write(" ");
-			conf.saveSettings("key", this.botKey);
-
-			// Añadir colorines :D
-			text.writeWithColor ("Saved !", ConsoleColor.DarkGreen, true);
-
+            conf.setSetting("key", this.botKey);
 			// Una vez creado el token comprobar si es correcto
 			return this.botKey;
 		} else {
@@ -70,10 +66,7 @@ public class appCheck {
 		Console.Write("Is the password correct ? (Y/N): ");
 		if (Console.ReadKey().Key == ConsoleKey.Y) {
 			Console.Write(" ");
-			conf.saveSettings("pW",this.pW);
-
-			text.writeWithColor("Saved !",ConsoleColor.DarkGreen, true);
-
+            conf.setSetting("pW",this.pW);
 			return this.pW;
 		} else {
 			return null;

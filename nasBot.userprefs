@@ -1,15 +1,16 @@
-﻿<Properties StartupConfiguration="{0EC57CC7-6A54-45F7-8BCF-1DFD552DE35F}|Default" StartupItem="nasBot.csproj">
+﻿<Properties StartupConfiguration="{0EC57CC7-6A54-45F7-8BCF-1DFD552DE35F}|Default">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="config.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Estado de nasBot">
     <Files>
-      <File FileName="Program.cs" Line="43" Column="27" />
-      <File FileName="config.cs" Line="20" Column="26" />
-      <File FileName="checks.cs" Line="75" Column="4" />
+      <File FileName="Program.cs" Line="95" Column="18" />
+      <File FileName="config.cs" Line="36" Column="10" />
+      <File FileName="checks.cs" Line="69" Column="43" />
       <File FileName="consoleTweaks.cs" Line="1" Column="1" />
+      <File FileName="Estado de nasBot" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.ItemProperties.nasBot PreferredExecutionTarget="MonoDevelop.Default" />

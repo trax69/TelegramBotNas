@@ -33,14 +33,12 @@ class nasBot {
 				if (data[0].Contains("key"))
 				{
 					// Save Token
-					conf.saveSettings("key", data[1]);
-					text.writeWithColor("The token has been successfully saved !", ConsoleColor.DarkGreen, true);
+                    conf.setSetting("key", data[1]);
 				}
 				else if (data[0].Contains("pW"))
 				{
 					// Save passWord
-					conf.saveSettings("pW",data[1]);
-					text.writeWithColor("The password has been successfully saved !", ConsoleColor.DarkGreen, true);
+                    conf.setSetting("pW",data[1]);
 				}
 				Environment.Exit(0);
 			}
@@ -49,9 +47,11 @@ class nasBot {
 		/* Dar la bienvenida al usuario :-) */
 		text.writeWithColor("Welcome to Telegram Bot App !",newLine: true);
 
-		/* Cargar configuración del bot */
-		botKey = conf.loadConfig ("botKey");
-		pW = conf.loadConfig ("pW");
+        /* Cargar configuración del bot */
+        conf.loadConfig();
+        botKey = conf.getKey();
+        pW = conf.getPW();
+        authID = conf.getAuth();
 
 		/* Comprobación del token del bot */
 		while (chk.checkToken (botKey) == false) {
@@ -82,10 +82,17 @@ class nasBot {
 		/* Especifico para Windows para que no se cierre automaticamente la ventana */
 		Console.BackgroundColor = ConsoleColor.White;
 		text.writeWithColor ("\nPress ENTER to STOP the bot and EXIT\n", ConsoleColor.Black, true);
+
 		// Qué la consola no se cierre
 		Console.ReadLine();
+
+        // Guardar la lista de autorizados
+        conf.setSetting("authID", authID);
+
 		// Parar el bot !
 		bot.StopReceiving();
+
+        // Salida sin errores
 		Environment.Exit(0);
 	}
 
