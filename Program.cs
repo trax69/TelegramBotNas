@@ -152,7 +152,6 @@ class nasBot {
 
 		long chatID = e.Message.Chat.Id;
 		string texto = "";
-		Console.WriteLine ("isAuth: " + authID.Contains(e.Message.From.Id));
 
 		switch (menu) {
 			case "/start":
