@@ -33,35 +33,39 @@ class nasBot {
 				if (data[0].Contains("key"))
 				{
 					// Save Token
-                    conf.setSetting("key", data[1]);
+                    conf.saveKey(data[1]);
 				}
 				else if (data[0].Contains("pW"))
 				{
 					// Save passWord
-                    conf.setSetting("pW",data[1]);
+                    conf.savePW(data[1]);
 				}
+
 				Environment.Exit(0);
 			}
 		}
 
 		/* Dar la bienvenida al usuario :-) */
-		text.writeWithColor("Welcome to Telegram Bot App !",newLine: true);
+        text.writeWithColor("Welcome to Telegram Bot App !", ConsoleColor.Blue, newLine: true);
 
         /* Cargar configuración del bot */
         conf.loadConfig();
+        /* Asignar Variables */
         botKey = conf.getKey();
         pW = conf.getPW();
         authID = conf.getAuth();
 
 		/* Comprobación del token del bot */
-		while (chk.checkToken (botKey) == false) {
-			botKey = chk.getToken (); // Si la comprobación sale bien asignar el token
-		}
-			
+        if (chk.checkToken (botKey)) {
+            botKey = chk.botToken;
+        }
+        Console.WriteLine ("Token: " + botKey);
+	    
 		/* Comprobación de la contraseña de autenticación */
-		while (chk.checkAuth (pW) == false) {
-			pW = chk.getpW (); // Si la comprobación sale bien asignar la contraseña
-		}
+        if (chk.checkAuth (pW)) {
+            pW = chk.authPass;
+        }
+        Console.WriteLine ("Pass: " + pW);
 
 		text.writeWithColor("Starting bot... ");
 		// Asignar el valor del token al bot y asignar el bot a una variable
@@ -87,7 +91,7 @@ class nasBot {
 		Console.ReadLine();
 
         // Guardar la lista de autorizados
-        conf.setSetting("authID", authID);
+        conf.saveAuth(authID);
 
 		// Parar el bot !
 		bot.StopReceiving();

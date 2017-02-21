@@ -12,41 +12,13 @@ public class appConfig {
     config appConfigs = new config(); // Nueva clase config ( donde se guardan en realidad los ajustes )
     consoleTweaks text = new consoleTweaks(); // Chorradas para hacer la consola más bonica
 
-    /* Para guardar los ajustes */
-	public void setSetting(string index, string value) {
-        if (index == "key")
-        {
-            this.appConfigs.token = value;
-            text.writeWithColor("Token set !", ConsoleColor.DarkGreen, true);
-        }
-        else if (index == "pW") {
-            this.appConfigs.passWord = value;
-            text.writeWithColor("Password set !", ConsoleColor.DarkGreen, true);
-        }
-        this.saveSettings();
-	}
-
-    /* Function overload -> para guardar los ajustes si detecta que es una lista */
-    public void setSetting(string index, List<int> value)
-    {
-        if (index == "authID")
-        {
-            this.appConfigs.authID = value;
-            text.writeWithColor("AuthID set !", ConsoleColor.DarkGreen, true);
-        }
-        this.saveSettings();
-    }
-
 	// Guardar la configuración de la aplicación en fichero
 	private void saveSettings()
 	{
         try
         {
-            using (StreamWriter sW = new StreamWriter(path + fileName))
-            {
-                string json = JsonConvert.SerializeObject(this.appConfigs);
-                sW.WriteLine(json);
-                sW.Close();
+            using (StreamWriter sW = new StreamWriter(path + fileName)) {
+                sW.WriteLine(JsonConvert.SerializeObject(appConfigs));
             }
             text.writeWithColor("Settings have been saved !", ConsoleColor.DarkGreen, true);
         }
@@ -56,61 +28,85 @@ public class appConfig {
 	}
 
 	// Cargar la configuración de la aplicación
-	private void loadSetting()
+	private void loadSettings()
 	{
-        try
-        {
-            if (!File.Exists(path + fileName))
-            {
-                File.CreateText(path + fileName).Close();
+        if (!File.Exists (path + fileName)) {
+            File.CreateText (path + fileName).Close ();
+            using (StreamWriter sW = new StreamWriter (path + fileName)) {
+                sW.WriteLine (JsonConvert.SerializeObject (appConfigs));
             }
-            using (StreamReader sR = new StreamReader(path + fileName))
-            {
-                this.appConfigs = JsonConvert.DeserializeObject<config>(sR.ReadLine());
-                sR.Close();
+        } else {
+            using (StreamReader sR = new StreamReader (path + fileName)) {
+                appConfigs = JsonConvert.DeserializeObject<config> (sR.ReadLine ());
             }
-        } catch (ArgumentNullException) {
-            this.appConfigs.token = "";
-            this.appConfigs.passWord = "";
-            this.appConfigs.authID = new List<int>();
         }
-	}
+    }
 
 	public void loadConfig()
 	{
 		Console.Write("Reading configuration files... ");
         // Asignación de variables
-        loadSetting();
+        if (string.IsNullOrEmpty(appConfigs.token) || string.IsNullOrEmpty(appConfigs.passWord)) {
+            loadSettings ();
+        }
 		// Añadidos colorines al OK
         text.writeWithColor("Ok.",ConsoleColor.DarkGreen, true);
 	}
 
     public string getKey() {
-        if (this.appConfigs.token == null)
-        {
-            loadSetting();
-        }
-        return this.appConfigs.token;
+        return appConfigs.token;
+    }
+
+    public void saveKey(string value) {
+        appConfigs.token = value;
+        saveSettings ();
     }
 
     public string getPW() {
-        if (this.appConfigs.passWord == null)
-        {
-            loadSetting();
-        }
-        return this.appConfigs.passWord;
+        return appConfigs.passWord;
+    }
+
+    public void savePW(string value) {
+        appConfigs.passWord = value;
+        saveSettings ();
     }
 
     public List<int> getAuth() {
-        if (this.appConfigs.authID == null) {
-            loadSetting();
-        }
-        return this.appConfigs.authID;
+        return appConfigs.authID;
+    }
+
+    public void saveAuth(List<int> value) {
+        appConfigs.authID = value;
+        saveSettings ();
     }
 
 	private class config {
-		public string token;
-		public string passWord;
-		public List<int> authID = new List<int>();
+        private string _token;
+        private string _passWord;
+        private List<int> _auth;
+
+        public string token {
+            get { 
+                return this._token;
+            } set { 
+                this._token = value;
+            }
+        }
+
+        public string passWord { 
+            get { 
+                return this._passWord;
+            } set { 
+                this._passWord = value;
+            }
+        }
+
+        public List<int> authID { 
+            get { 
+                return this._auth;
+            } set { 
+                this._auth = value;
+            }
+        }
 	}
 }
