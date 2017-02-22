@@ -11,13 +11,19 @@ using Telegram.Bot.Types.Enums;
 class nasBot {
 	static string botKey;
 	static string pW;
-	static List<int> authID = new List<int>(); // Variable que guarda las personas autenticadas
-	static appConfig conf = new appConfig();
-	static appCheck chk = new appCheck ();
-	static consoleTweaks text = new consoleTweaks();
+    static List<int> authID; // Variable que guarda las personas autenticadas
+    static appConfig conf;  // Variable para gestionar la configuración
+    static appCheck chk;    // Variable para gestionar los chequeos internos
+    static consoleTweaks text;  // Variable para gestionar la consola
 
 	public static void Main(string[] args)
 	{
+        /* Iniciando Variables */
+        conf = new appConfig();
+        chk = new appCheck ();
+        text = new consoleTweaks();
+        authID = new List<int> ();
+
 		/* Limpiar la consola */
 		Console.Clear();
 
@@ -27,47 +33,49 @@ class nasBot {
 			// Si los argumentos contienen un igual EJ: Key=Value
 			if (arg.Contains("key=") || arg.Contains("pW="))
 			{
+                conf.loadConfig ();
 				// Separa el string en un array dividiendo por el '='
 				string[] data = arg.Split((char)'=');
 				// Si la primera parte del array contiene 'key', asignamos en los ajustes
 				if (data[0].Contains("key"))
 				{
 					// Save Token
-                    conf.saveKey(data[1]);
+                    conf.setKey(data[1]);
 				}
 				else if (data[0].Contains("pW"))
 				{
 					// Save passWord
-                    conf.savePW(data[1]);
+                    conf.setPW(data[1]);
 				}
 
+                conf.save (true);
 				Environment.Exit(0);
 			}
 		}
 
 		/* Dar la bienvenida al usuario :-) */
-        text.writeWithColor("Welcome to Telegram Bot App !", ConsoleColor.Blue, newLine: true);
+        text.writeWithColor("Welcome to Telegram Bot App !\n", ConsoleColor.Blue, newLine: true);
 
         /* Cargar configuración del bot */
         conf.loadConfig();
+
         /* Asignar Variables */
         botKey = conf.getKey();
         pW = conf.getPW();
         authID = conf.getAuth();
+        text.writeWithColor ("\n");
 
 		/* Comprobación del token del bot */
         if (chk.checkToken (botKey)) {
             botKey = chk.botToken;
         }
-        Console.WriteLine ("Token: " + botKey);
 	    
 		/* Comprobación de la contraseña de autenticación */
         if (chk.checkAuth (pW)) {
             pW = chk.authPass;
         }
-        Console.WriteLine ("Pass: " + pW);
 
-		text.writeWithColor("Starting bot... ");
+		text.writeWithColor("\nStarting bot... ");
 		// Asignar el valor del token al bot y asignar el bot a una variable
 		var bot = new TelegramBotClient(botKey);
 
@@ -91,7 +99,9 @@ class nasBot {
 		Console.ReadLine();
 
         // Guardar la lista de autorizados
-        conf.saveAuth(authID);
+        conf.loadConfig();
+        conf.setAuth(authID);
+        conf.save (true);   // Guardar los ajustes
 
 		// Parar el bot !
 		bot.StopReceiving();
@@ -105,12 +115,15 @@ class nasBot {
 	{
 		// Crea un nuevo objeto TelegramBotClient apartir del sender para poder hacer cosas con los mensajes
 		var bot = (TelegramBotClient)sender;
-		// Bloque debug para la APP
-		Console.WriteLine("Message(" +
-			"ID: " + e.Message.MessageId +
-			" ChatID: " + e.Message.Chat.Id +
-			" FromID: " + e.Message.From.Id +
-			"): " + e.Message.Text);
+		// Bloque debug para la consola
+        text.writeWithColor ("Message (ID: ");
+        text.writeWithColor (e.Message.MessageId.ToString(), ConsoleColor.Blue);
+        text.writeWithColor (" ChatID: ");
+        text.writeWithColor (e.Message.Chat.Id.ToString(), ConsoleColor.Blue);
+        text.writeWithColor (" FromID: ");
+        text.writeWithColor (e.Message.From.Id.ToString(), ConsoleColor.Blue);
+        text.writeWithColor (" ): ");
+        text.writeWithColor (e.Message.Text, ConsoleColor.DarkBlue, true);
 
 		if (e.Message.Text.StartsWith("/", StringComparison.OrdinalIgnoreCase))
 		{
@@ -122,6 +135,7 @@ class nasBot {
 			{
 				if (e.Message.Text == pW)
 				{
+                    text.writeWithColor ("ID's: " + authID.Count);
 					if (!authID.Contains (e.Message.From.Id)) {
 						authID.Add (e.Message.From.Id);
 						Console.WriteLine ("UserID: " + e.Message.From.Id + " added to the auth list.");

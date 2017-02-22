@@ -19,7 +19,7 @@ public class appCheck
         // Comprobar que ha escrito la Y
         if (Console.ReadKey().Key == ConsoleKey.Y) {
             Console.WriteLine(" ");
-            conf.saveKey(token);
+            conf.setKey(token);
             // Una vez creado el token comprobar si es correcto
             return token;
         } else {
@@ -67,7 +67,7 @@ public class appCheck
         if (Console.ReadKey().Key == ConsoleKey.Y)
         {
             Console.WriteLine(" ");
-            conf.savePW (passWord);
+            conf.setPW (passWord);
             this.authPass = passWord;
             return passWord;
         } else {
@@ -92,9 +92,7 @@ public class appCheck
             return true;
         } else {
             // Añadidos colorines al OK.
-            text.writeWithColor("Ok. ", ConsoleColor.DarkGreen);
-            Console.Write("Password is ");
-            text.writeWithColor(passWord, ConsoleColor.DarkGreen, true);
+            text.writeWithColor("Ok. ", ConsoleColor.DarkGreen, true);
             this.authPass = passWord;
             return true;
         }
