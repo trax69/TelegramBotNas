@@ -41,6 +41,7 @@ public class appCheck
             do {
                 token = createToken ();
             } while (!this.checkToken (token));
+            _isTokenOk = true;
         } else {
             if (System.Text.RegularExpressions.Regex.IsMatch(token, @"^\d*:[\w\d-_]{35}$")) 
             {

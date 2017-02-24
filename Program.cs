@@ -122,7 +122,7 @@ class nasBot {
         text.writeWithColor (e.Message.Chat.Id.ToString(), ConsoleColor.Blue);
         text.writeWithColor (" FromID: ");
         text.writeWithColor (e.Message.From.Id.ToString(), ConsoleColor.Blue);
-        text.writeWithColor (" ): ");
+        text.writeWithColor ("): ");
         text.writeWithColor (e.Message.Text, ConsoleColor.DarkBlue, true);
 
 		if (e.Message.Text.StartsWith("/", StringComparison.OrdinalIgnoreCase))
@@ -148,22 +148,17 @@ class nasBot {
 					sendWithKeyboard("authOk", e, bot);
 				} else {
                     // Debug info for console
-                    text.writeWithColor ("User", ConsoleColor.DarkCyan);
-                    text.writeWithColor ("(");
                     if (!(string.IsNullOrEmpty (e.Message.From.FirstName) || string.IsNullOrWhiteSpace (e.Message.From.FirstName)))
                     {
-                        text.writeWithColor ("FN: ", ConsoleColor.DarkCyan);
                         text.writeWithColor (e.Message.From.FirstName + " ", ConsoleColor.DarkYellow);
                     }
                     if (!(string.IsNullOrEmpty (e.Message.From.LastName) || string.IsNullOrWhiteSpace (e.Message.From.LastName)))
                     {
-                        text.writeWithColor ("LN: ", ConsoleColor.DarkCyan);
                         text.writeWithColor (e.Message.From.LastName + " ", ConsoleColor.DarkYellow);
                     }
                     text.writeWithColor ("ID: ", ConsoleColor.DarkCyan);
-                    text.writeWithColor (e.Message.From.Id + " ", ConsoleColor.DarkYellow);
-                    text.writeWithColor (") ");
-                    text.writeWithColor ("tryed to auth and fail.", ConsoleColor.DarkCyan, true);
+                    text.writeWithColor (e.Message.From.Id.ToString(), ConsoleColor.DarkYellow);
+                    text.writeWithColor (" tryed to auth and fail.", ConsoleColor.DarkCyan, true);
 
                     // Send message to client to inform of failure
 					sendWithKeyboard("authFail", e, bot);
@@ -272,9 +267,13 @@ class nasBot {
             case "/unAuth":
                 if (isUserAuth (e.Message.From.Id)) {
                     authID.Remove (e.Message.From.Id);
+                    // Debug for console
+                    text.writeWithColor ("UserID: ", ConsoleColor.DarkYellow);
+                    text.writeWithColor (e.Message.From.Id.ToString(), ConsoleColor.DarkRed);
+                    text.writeWithColor (" removed from the auth list. ", ConsoleColor.DarkYellow, true);
                 };
 
-                bot.SendTextMessageAsync (chatID, "<i>Ya <b>no</b> estás autorizado en este bot.</i>", parseMode: ParseMode.Html);
+                bot.SendTextMessageAsync (chatID, "<i>Ya <b>no</b> estás autorizado en este bot.</i>",parseMode: ParseMode.Html);
             break;
 
 			case "/authMenu":
