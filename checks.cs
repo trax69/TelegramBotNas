@@ -33,29 +33,23 @@ public class appCheck
 	*/
     public bool checkToken(string token)
     {
+        bool _isTokenOk = false;
         Console.Write("Checking bot token... ");
         if (string.IsNullOrEmpty(token) || string.IsNullOrWhiteSpace(token))
         {
             text.writeWithColor("Fail. ", ConsoleColor.Red, true);
             do {
                 token = createToken ();
-            } while (this.checkToken (token) != true);
-            return true;
-        }
-        else
-        {
-            try {
-                var bot = new TelegramBotClient(token);
-                if (bot.TestApiAsync().Result) {
-                    text.writeWithColor("Ok. ", ConsoleColor.DarkGreen, true);
-                }
+            } while (!this.checkToken (token));
+        } else {
+            if (System.Text.RegularExpressions.Regex.IsMatch(token, @"^\d*:[\w\d-_]{35}$")) 
+            {
+                text.writeWithColor("Ok. ", ConsoleColor.DarkGreen, true);
                 this.botToken = token;
-                return true;
-            } catch (ArgumentException) {
-                text.writeWithColor("Token not valid. ", ConsoleColor.Red, true);
-                return false;
+                _isTokenOk = true;
             }
         }
+        return _isTokenOk;
     }
 
     /* Crear la contraseña si no existe */

@@ -128,27 +128,44 @@ class nasBot {
 		if (e.Message.Text.StartsWith("/", StringComparison.OrdinalIgnoreCase))
 		{
 			sendWithKeyboard(e.Message.Text, e, bot);
-		}
-		else
-		{
+		} else {
 			if (isAuth)
 			{
 				if (e.Message.Text == pW)
 				{
-                    text.writeWithColor ("ID's: " + authID.Count);
 					if (!authID.Contains (e.Message.From.Id)) {
 						authID.Add (e.Message.From.Id);
-						Console.WriteLine ("UserID: " + e.Message.From.Id + " added to the auth list.");
+                        // Debug info for console
+                        text.writeWithColor ("UserID: ", ConsoleColor.DarkYellow);
+                        text.writeWithColor (e.Message.From.Id.ToString(), ConsoleColor.DarkGreen);
+                        text.writeWithColor (" added to the auth list. ", ConsoleColor.DarkYellow, true);
 					} else {
-						Console.WriteLine ("UserID: " + e.Message.From.Id + " already in the auth list.");
+                        // Debug info for console
+                        text.writeWithColor ("UserID: ", ConsoleColor.DarkYellow);
+                        text.writeWithColor (e.Message.From.Id.ToString(), ConsoleColor.DarkRed);
+                        text.writeWithColor (" already in the auth list. ", ConsoleColor.DarkYellow, true);
 					}
 					sendWithKeyboard("authOk", e, bot);
-				}
-				else
-				{
-					Console.WriteLine ("User(FN: " + e.Message.From.FirstName +
-						" LN: " + e.Message.From.LastName + 
-						" ID: " + e.Message.From.Id + ") tryed to auth and fail.");
+				} else {
+                    // Debug info for console
+                    text.writeWithColor ("User", ConsoleColor.DarkCyan);
+                    text.writeWithColor ("(");
+                    if (!(string.IsNullOrEmpty (e.Message.From.FirstName) || string.IsNullOrWhiteSpace (e.Message.From.FirstName)))
+                    {
+                        text.writeWithColor ("FN: ", ConsoleColor.DarkCyan);
+                        text.writeWithColor (e.Message.From.FirstName + " ", ConsoleColor.DarkYellow);
+                    }
+                    if (!(string.IsNullOrEmpty (e.Message.From.LastName) || string.IsNullOrWhiteSpace (e.Message.From.LastName)))
+                    {
+                        text.writeWithColor ("LN: ", ConsoleColor.DarkCyan);
+                        text.writeWithColor (e.Message.From.LastName + " ", ConsoleColor.DarkYellow);
+                    }
+                    text.writeWithColor ("ID: ", ConsoleColor.DarkCyan);
+                    text.writeWithColor (e.Message.From.Id + " ", ConsoleColor.DarkYellow);
+                    text.writeWithColor (") ");
+                    text.writeWithColor ("tryed to auth and fail.", ConsoleColor.DarkCyan, true);
+
+                    // Send message to client to inform of failure
 					sendWithKeyboard("authFail", e, bot);
 				}
 			}
@@ -161,69 +178,73 @@ class nasBot {
 		bot = null;
 	}
 
+    private static bool isUserAuth(int userID) {
+        bool _auth = false; // Dar por sentado que no está autorizado
+
+        if (authID.Contains(userID)) {
+            _auth = true;
+        }
+
+        return _auth;
+    }
+
 	private static void sendWithKeyboard(string menu, MessageEventArgs e, TelegramBotClient bot)
 	{
-		var reply = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup();
+        var reply = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup();
 		reply.OneTimeKeyboard = true;
 		reply.ResizeKeyboard = true;
 		reply.Selective = true;
 
 		long chatID = e.Message.Chat.Id;
-		string texto = "";
+        int userID = e.Message.From.Id;
 
 		switch (menu) {
+
 			case "/start":
-			reply.Keyboard = new[] {
-				new[] {
-					new KeyboardButton ("/auth")
-				}
-			};
-				
-			bot.SendTextMessageAsync(chatID,"<i>Activando sistemas</i> <b>!</b>", replyMarkup: reply, parseMode: ParseMode.Html);
+            if (!isUserAuth(userID)) {
+    			reply.Keyboard = new[] {
+    				new[] {
+    					new KeyboardButton ("/auth")
+    				}
+                };
+                bot.SendTextMessageAsync(chatID,"<i>Activando sistemas</i> <b>!</b>", replyMarkup: reply, parseMode: ParseMode.Html);
+            } else {
+                sendWithKeyboard ("/authMenu", e, bot); // Si está autenticado redirigir al menu de autenticados
+            }
 			break;
 
 			case "default":
-			reply.Keyboard = new[] {
-				new[] {
-					new KeyboardButton ("/start")
-				}
-			};
-			texto = "<b>Comando (" + e.Message.Text + ") no reconocido</b>, <i>porfavor vuelve a empezar</i>.";
-			bot.SendTextMessageAsync(chatID, texto, replyMarkup: reply, parseMode: ParseMode.Html);
+    			reply.Keyboard = new[] {
+    				new[] {
+    					new KeyboardButton ("/start")
+    				}
+    			};
+    			string texto = "<b>Comando (<i>" + e.Message.Text + "</i>) no reconocido</b>, <i>porfavor vuelve a empezar</i>.";
+    			bot.SendTextMessageAsync(chatID, texto, replyMarkup: reply, parseMode: ParseMode.Html);
 			break;
 
-			case "/server":
-				if (authID.Contains (e.Message.From.Id)) {
-					reply.Keyboard = new[]
-					{
-						new[]
-						{
-							new KeyboardButton("/rebootServer"),
-							new KeyboardButton("/shutdownServer")
-						},
-						new [] {
-							new KeyboardButton("/authMenu")
-						}
-					};
-					
-					texto = "<i>Sección</i> <b>Server</b>";
-				} else {
-					reply.Keyboard = new[]
-					{
-						new[]
-						{
-							new KeyboardButton("/auth"),
-						}
-					};
-
-					texto = "<i>No tienes <b>acceso</b> a este comando</i>";
-				}
-
-				bot.SendTextMessageAsync(chatID, texto, replyMarkup: reply, parseMode: ParseMode.Html);
+            case "/server":
+                if (isUserAuth(e.Message.From.Id)) {
+                    reply.Keyboard = new[] {
+                        new[] {
+                            new KeyboardButton ("/rebootServer"),
+                            new KeyboardButton ("/shutdownServer")
+                        },
+                        new [] {
+                            new KeyboardButton("/unAuth")    
+                        },
+                        new [] {
+                            new KeyboardButton ("/authMenu")
+                        }
+                    };
+                    bot.SendTextMessageAsync (chatID, "<i>Sección</i> <b>Server</b>", replyMarkup: reply, parseMode: ParseMode.Html);
+                } else {
+                    sendWithKeyboard ("noAuth", e, bot);
+                }
 			break;
 
 			case "/torrent":
-				if (authID.Contains (e.Message.From.Id)) {
+                if (isUserAuth(e.Message.From.Id)) {
 					reply.Keyboard = new[] {
 						new[] {
 							new KeyboardButton ("/uploadTorrent"),
@@ -237,27 +258,24 @@ class nasBot {
 							new KeyboardButton ("/authMenu")
 						}
 					};
-
-					texto = "<i>Sección</i> <b>Torrent</b>";
+                    bot.SendTextMessageAsync(chatID, "<i>Sección</i> <b>Torrent</b>", replyMarkup: reply, parseMode: ParseMode.Html);
 				} else {
-					reply.Keyboard = new[]
-					{
-						new[]
-						{
-							new KeyboardButton("/auth"),
-						}
-					};
-
-					texto = "<i>No tienes <b>acceso</b> a este comando</i>";
+                    sendWithKeyboard ("noAuth", e, bot); // Ir a la sección de no autorización
 				}
-
-				bot.SendTextMessageAsync(chatID, texto, replyMarkup: reply, parseMode: ParseMode.Html);
 			break;
 
 			case "/auth":
 				isAuth = true;
 				bot.SendTextMessageAsync(chatID, "<i>Porfavor introduce la contraseña</i>", parseMode: ParseMode.Html);
 			break;
+
+            case "/unAuth":
+                if (isUserAuth (e.Message.From.Id)) {
+                    authID.Remove (e.Message.From.Id);
+                };
+
+                bot.SendTextMessageAsync (chatID, "<i>Ya <b>no</b> estás autorizado en este bot.</i>", parseMode: ParseMode.Html);
+            break;
 
 			case "/authMenu":
 				if (authID.Contains (e.Message.From.Id)) {
@@ -269,21 +287,11 @@ class nasBot {
 							new KeyboardButton ("/torrent"),
 						}
 					};
-
-					texto = "<i>Menú con privilegios</i>";
+                    bot.SendTextMessageAsync(chatID, "<i>Menú con privilegios</i>", replyMarkup: reply, parseMode: ParseMode.Html);
 				} else {
-					reply.Keyboard = new[]
-					{
-						new[]
-						{
-							new KeyboardButton("/auth"),
-						}
-					};
-
-					texto = "<i>No tienes <b>acceso</b> a este comando</i>";
+                    sendWithKeyboard ("noAuth", e, bot); // Ir a la sección de no autorización
 				}
-
-				bot.SendTextMessageAsync(chatID, texto, replyMarkup: reply, parseMode: ParseMode.Html);
+                
 			break;
 
 			case "authOk":
@@ -303,6 +311,18 @@ class nasBot {
 				isAuth = false;
 				bot.SendTextMessageAsync(chatID, "<i>Contraseña incorrecta NO.OB</i>", parseMode: ParseMode.Html);
 			break;
+
+            case "noAuth":
+                reply.Keyboard = new[]
+                {
+                    new[]
+                    {
+                        new KeyboardButton("/auth"),
+                    }
+                };
+
+                texto = "<i>No tienes <b>acceso</b> a este comando</i>";
+            break;
 		}
 	}
 }
