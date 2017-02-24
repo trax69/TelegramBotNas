@@ -259,10 +259,14 @@ class nasBot {
 				}
 			break;
 
-			case "/auth":
-				isAuth = true;
-				bot.SendTextMessageAsync(chatID, "<i>Porfavor introduce la contraseña</i>", parseMode: ParseMode.Html);
-			break;
+            case "/auth":
+                if (!isUserAuth (e.Message.From.Id)) { 
+                    isAuth = true;
+                    bot.SendTextMessageAsync (chatID, "<i>Porfavor introduce la contraseña</i>", parseMode: ParseMode.Html);
+                } else {
+                    sendWithKeyboard ("/authMenu", e, bot);
+                }
+            break;
 
             case "/unAuth":
                 if (isUserAuth (e.Message.From.Id)) {
