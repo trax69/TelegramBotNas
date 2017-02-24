@@ -10,4 +10,4 @@ cp packages/Newtonsoft.Json.9.0.1/lib/net45/Newtonsoft.Json.dll .
 cp packages/Telegram.Bot.10.4.0/lib/net45/Telegram.Bot.dll .
 
 # Compile the program
-dmcs -out "nasBot" -r:System.Net.Http.Formatting.dll -r:Newtonsoft.Json.dll -r:Telegram.Bot.dll Program.cs checks.cs config.cs consoleTweaks.cs
+dmcs -o "nasBot" -r:System.Net.Http.Formatting.dll -r:Newtonsoft.Json.dll -r:Telegram.Bot.dll Program.cs checks.cs config.cs consoleTweaks.cs
