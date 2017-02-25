@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Exceptions;
@@ -196,26 +197,25 @@ class nasBot {
 		switch (menu) {
 
 			case "/start":
-            if (!isUserAuth(userID)) {
-    			reply.Keyboard = new[] {
-    				new[] {
-    					new KeyboardButton ("/auth")
-    				}
-                };
-                bot.SendTextMessageAsync(chatID,"<i>Activando sistemas</i> <b>!</b>", replyMarkup: reply, parseMode: ParseMode.Html);
-            } else {
-                sendWithKeyboard ("/authMenu", e, bot); // Si está autenticado redirigir al menu de autenticados
-            }
+                if (!isUserAuth(userID)) {
+        			reply.Keyboard = new[] {
+        				new[] {
+        					new KeyboardButton ("/auth")
+        				}
+                    };
+                    bot.SendTextMessageAsync(chatID,"<i>Activando sistemas</i> <b>!</b>", replyMarkup: reply, parseMode: ParseMode.Html);
+                } else {
+                    sendWithKeyboard ("/authMenu", e, bot); // Si está autenticado redirigir al menu de autenticados
+                }
             break;
 
             case "/server":
                 if (!isUserAuth(e.Message.From.Id)) {
-                    sendWithKeyboard ("noAuth", e, bot);
+                    sendWithKeyboard ("noAuth", e, bot); // Ir a la sección de no autorización
                 } else {
                     reply.Keyboard = new[] {
                         new[] {
-                            new KeyboardButton ("/rebootServer"),
-                            new KeyboardButton ("/shutdownServer")
+                            new KeyboardButton ("/rebootServer")
                         },
                         new [] {
                             new KeyboardButton("/unAuth")    
@@ -228,18 +228,28 @@ class nasBot {
                 }
 			break;
 
+            case "/rebootServer":
+                string rebootTime = "10";   // Tiempo de reinicio en segundos
+                if (chk.isLinux ()) {
+                    Process.Start ("shutdown", "-r -t " + rebootTime);
+                } else { 
+                    Process.Start ("shutdown.exe", "-r -t " + rebootTime);
+                }
+                
+                bot.SendTextMessageAsync (chatID, "El <b>sistema</b> se va a reiniciar en <i>" + rebootTime + "</i> segundos",parseMode: ParseMode.Html);
+            break;
+
 			case "/torrent":
                 if (!isUserAuth(e.Message.From.Id)) {
                     sendWithKeyboard ("noAuth", e, bot); // Ir a la sección de no autorización
                 } else {
 					reply.Keyboard = new[] {
 						new[] {
-							new KeyboardButton ("/uploadTorrent"),
-							new KeyboardButton ("/listTorrent")
+							new KeyboardButton ("/uploadTorrent")
 						},
 						new[] {
-							new KeyboardButton ("/deleteTorrent"),
-							new KeyboardButton ("/checkTorrent")
+                            new KeyboardButton ("/listTorrent"),
+							new KeyboardButton ("/deleteTorrent")
 						},
 						new [] {
 							new KeyboardButton ("/authMenu")
@@ -260,14 +270,14 @@ class nasBot {
 
             case "/unAuth":
                 if (!isUserAuth (e.Message.From.Id)) {
-                    sendWithKeyboard ("noAuth", e, bot);
+                    sendWithKeyboard ("noAuth", e, bot); // Ir a la sección de no autorización
                 } else {
                     authID.Remove (e.Message.From.Id);
                     // Debug for console
                     text.writeWithColor ("UserID: ", ConsoleColor.DarkYellow);
                     text.writeWithColor (e.Message.From.Id.ToString(), ConsoleColor.DarkRed);
                     text.writeWithColor (" removed from the auth list. ", ConsoleColor.DarkYellow, true);
-                    bot.SendTextMessageAsync (chatID, "<i>Ya</i> <b>no</b> <i>estás autorizado en este bot</i>.", parseMode: ParseMode.Html);
+                    bot.SendTextMessageAsync (chatID, "<i>Ya</i> <b>no</b> <i>tienes autorización en este bot</i>.", parseMode: ParseMode.Html);
                 };
                 
             break;
