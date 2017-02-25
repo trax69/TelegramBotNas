@@ -92,5 +92,10 @@ public class appCheck
             return true;
         }
     }
+
+    public bool isLinux () {
+        int p = (int)System.Environment.OSVersion.Platform;
+        return (p == 4) || (p == 6) || (p == 128);
+    }
 }
 
