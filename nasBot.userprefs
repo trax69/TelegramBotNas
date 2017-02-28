@@ -1,18 +1,19 @@
-﻿<Properties StartupConfiguration="{0EC57CC7-6A54-45F7-8BCF-1DFD552DE35F}|Default" StartupItem="nasBot.csproj">
+﻿<Properties StartupConfiguration="{0EC57CC7-6A54-45F7-8BCF-1DFD552DE35F}|Default">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Estado de Projects">
     <Files>
-      <File FileName="Program.cs" Line="105" Column="40" />
+      <File FileName="Program.cs" Line="29" Column="11" />
       <File FileName="config.cs" Line="1" Column="1" />
       <File FileName="checks.cs" Line="79" Column="28" />
       <File FileName="consoleTweaks.cs" Line="37" Column="9" />
+      <File FileName="Estado de Projects" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MultiItemStartupConfigurations />
-  <AuthorInfo Name="Big Cash Monkeys" Email="admin@bcm.ovh" Copyright="Big Cash Monkeys" Company="Big Cash Monkeys" Trademark="Big Cash Monkeys" />
   <MonoDevelop.Ide.ItemProperties.nasBot PreferredExecutionTarget="MonoDevelop.Default" />
+  <AuthorInfo Name="Big Cash Monkeys" Email="admin@bcm.ovh" Copyright="Big Cash Monkeys" Company="Big Cash Monkeys" Trademark="Big Cash Monkeys" />
 </Properties>
