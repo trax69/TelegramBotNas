@@ -25,6 +25,9 @@ class nasBot {
         text = new consoleTweaks();
         authID = new List<int> ();
 
+        /* Ajustar tamaño de la consola */
+        Console.SetWindowSize (400, 400);
+
 		/* Limpiar la consola */
 		Console.Clear();
 
@@ -54,8 +57,8 @@ class nasBot {
 			}
 		}
 
-		/* Dar la bienvenida al usuario :-) */
-        text.writeWithColor("Welcome to Telegram Bot App !\n", ConsoleColor.Blue, newLine: true);
+		/* Titulo de la APP ! :-) */
+        text.Title ("Welcome to Telegram Bot App !", char.Parse("#"), ConsoleColor.Blue);
 
         /* Cargar configuración del bot */
         conf.loadConfig();
@@ -64,7 +67,7 @@ class nasBot {
         botKey = conf.getKey();
         pW = conf.getPW();
         authID = conf.getAuth();
-        text.writeWithColor ("\n");
+        Console.WriteLine ();
 
 		/* Comprobación del token del bot */
         if (chk.checkToken (botKey)) {
@@ -76,7 +79,8 @@ class nasBot {
             pW = chk.authPass;
         }
 
-		text.writeWithColor("\nStarting bot... ");
+        Console.WriteLine ();
+		text.writeWithColor("Starting bot... ");
 		// Asignar el valor del token al bot y asignar el bot a una variable
 		var bot = new TelegramBotClient(botKey);
 
@@ -94,10 +98,15 @@ class nasBot {
 
 		/* Especifico para Windows para que no se cierre automaticamente la ventana */
 		Console.BackgroundColor = ConsoleColor.White;
-		text.writeWithColor ("\nPress ENTER to STOP the bot and EXIT\n", ConsoleColor.Black, true);
+        text.writeWithColor ("Write QUIT to exit execution\n", ConsoleColor.Black, true);
 
 		// Qué la consola no se cierre
-		Console.ReadLine();
+        string consoleMenu;
+        // Bucle comandos de la consola
+        while ((consoleMenu = Console.ReadLine ().ToLower()) != "quit") {
+            consoleMenu = "Comando Recibido: " + consoleMenu;
+            Console.WriteLine (consoleMenu.PadLeft(consoleMenu.Length + 1));
+        }
 
         // Guardar la lista de autorizados
         conf.loadConfig();
