@@ -13,9 +13,9 @@ public class appCheck
     /* Crear el token si no existe */
     private string createToken()
     {
-        Console.WriteLine("Couldn't detect bot Token, please write it now: ");
+        text.writeWithColor("Couldn't detect bot Token, please write it now: ", newLine: true);
         string token = Console.ReadLine();
-        Console.Write("Is the token correct ? (Y/N): ");
+        text.writeWithColor("Is the token correct ? (Y/N): ");
         // Comprobar que ha escrito la Y
         if (Console.ReadKey().Key == ConsoleKey.Y) {
             Console.WriteLine(" ");
@@ -34,7 +34,7 @@ public class appCheck
     public bool checkToken(string token)
     {
         bool _isTokenOk = false;
-        Console.Write("Checking bot token... ");
+        text.writeWithColor("Checking bot token... ");
         if (string.IsNullOrEmpty(token) || string.IsNullOrWhiteSpace(token))
         {
             text.writeWithColor("Fail. ", ConsoleColor.Red, true);
@@ -56,9 +56,9 @@ public class appCheck
     /* Crear la contraseña si no existe */
     public string createAuth()
     {
-        Console.WriteLine("Couldn't detect auth password, please write it now: ");
+        text.writeWithColor("Couldn't detect auth password, please write it now: ", newLine: true);
         string passWord = Console.ReadLine();
-        Console.Write("Is the password correct ? (Y/N): ");
+        text.writeWithColor("Is the password correct ? (Y/N): ");
         if (Console.ReadKey().Key == ConsoleKey.Y)
         {
             Console.WriteLine(" ");
@@ -76,7 +76,7 @@ public class appCheck
 	*/
     public bool checkAuth(string passWord)
     {
-        Console.Write("Checking auth password... ");
+        text.writeWithColor("Checking auth password... ");
         if (string.IsNullOrEmpty(passWord) || string.IsNullOrWhiteSpace(passWord))
         {
             // Añadidos colorines al Fail.
