@@ -1,5 +1,0 @@
-/dos/botSettings/obj/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
-/dos/botSettings/bin/Debug/botSettings.dll.mdb
-/dos/botSettings/bin/Debug/botSettings.dll
-/dos/botSettings/obj/Debug/botSettings.dll
-/dos/botSettings/obj/Debug/botSettings.dll.mdb

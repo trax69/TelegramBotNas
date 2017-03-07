@@ -40,12 +40,13 @@ namespace botSettings
 		// Private
 		private bool isConfigSet = false;
 		private bool isPathSet = false;
+		private string filePathBackup;
 		private botChecks chk = new botChecks();
 		private botConfig conf = new botConfig();
 
 		public botSetting(string filePath)
 		{
-			setFilePath (filePath);
+			configFilePath = filePath;
 		}
 
 		/// <summary>
@@ -68,7 +69,9 @@ namespace botSettings
 
 				using (StreamReader sR = new StreamReader(filePath))
 				{
+					filePathBackup = filePath; // crear una copia de la path
 					data = JsonConvert.DeserializeObject<botConfig>(sR.ReadLine());
+					data.configPath = filePathBackup; // volver a escribir la copia tras leer el null
 					this.isConfigSet = true;
 				}
 
@@ -195,36 +198,71 @@ namespace botSettings
 			conf.authList [listIndex].role = newRole;
 		}
 
+		/// <summary>
+		/// Sets the user trys.
+		/// </summary>
+		/// <param name="listIndex">List index.</param>
+		/// <param name="newNrTrys">New nr trys.</param>
 		public void setUserTrys(int listIndex, int newNrTrys)
 		{
 			conf.authList [listIndex].nrTry = newNrTrys;
 		}
 
+		/// <summary>
+		/// Sets the user is auth.
+		/// </summary>
+		/// <param name="listIndex">List index.</param>
+		/// <param name="newIsAuth">If set to <c>true</c> new is auth.</param>
 		public void setUserIsAuth(int listIndex, bool newIsAuth)
 		{
 			conf.authList [listIndex].isAuth = newIsAuth;
 		}
 
+		/// <summary>
+		/// Sets the user in auth process.
+		/// </summary>
+		/// <param name="listIndex">List index.</param>
+		/// <param name="newInAuthProcess">If set to <c>true</c> new in auth process.</param>
 		public void setUserInAuthProcess(int listIndex, bool newInAuthProcess)
 		{
 			conf.authList [listIndex].inAuthProcess = newInAuthProcess;
 		}
 
+		/// <summary>
+		/// Sets the user ban until.
+		/// </summary>
+		/// <param name="listIndex">List index.</param>
+		/// <param name="newBanUntil">New ban until.</param>
 		public void setUserBanUntil(int listIndex, DateTime newBanUntil)
 		{
 			conf.authList [listIndex].banUntil = newBanUntil;
 		}
 
+		/// <summary>
+		/// Gets the name of the user first.
+		/// </summary>
+		/// <returns>The user first name.</returns>
+		/// <param name="listIndex">List index.</param>
 		public string getUserFirstName(int listIndex)
 		{
 			return conf.authList [listIndex].firstName;
 		}
 
+		/// <summary>
+		/// Gets the name of the user last.
+		/// </summary>
+		/// <returns>The user last name.</returns>
+		/// <param name="listIndex">List index.</param>
 		public string getUserLastName(int listIndex)
 		{
 			return conf.authList [listIndex].lastName;
 		}
 
+		/// <summary>
+		/// Gets the name of the user user.
+		/// </summary>
+		/// <returns>The user user name.</returns>
+		/// <param name="listIndex">List index.</param>
 		public string getUserUserName(int listIndex)
 		{
 			return conf.authList [listIndex].userName;
@@ -272,146 +310,59 @@ namespace botSettings
 
 		#region "Config Get's and Set's"
 		/// <summary>
-		/// Sets the token.
+		/// Gets or sets the bot token.
 		/// </summary>
-		/// <returns><c>true</c>, if token was set, <c>false</c> otherwise.</returns>
-		/// <param name="token">Token.</param>
-		public bool setToken(string token)
+		/// <value>The bot token.</value>
+		public string botToken
 		{
-			bool _isSet = false;
-			if (chk.checkToken (token))
-			{
-				this.conf.token = token;
-				_isSet = true;
+			get {
+				return conf.token;
 			}
-			return _isSet;
-		}
-			
-		/// <summary>
-		/// Sets the PW.
-		/// </summary>
-		/// <returns><c>true</c>, if PW was set, <c>false</c> otherwise.</returns>
-		/// <param name="PW">PW.</param>
-		public bool setPW(string PW)
-		{
-			bool _isSet = false;
-			if (chk.checkPW(PW))
-			{
-				this.conf.authPW = PW;
-				_isSet = true;
+			set {
+				conf.token = value;
 			}
-			return _isSet;
 		}
 
 		/// <summary>
-		/// Sets the file path where the config is saved.
+		/// Gets or sets the password.
 		/// </summary>
-		/// <param name="path">File path including filename.</param>
-		public void setFilePath(string path)
+		/// <value>The password.</value>
+		public string passWord
 		{
-			this.conf.configPath = path;
-			isPathSet = true;
+			get {
+				return conf.authPW;
+			}
+			set {
+				conf.authPW = value;
+			}
 		}
 
 		/// <summary>
-		/// Sets the file path where the .torrent files are saved.
+		/// Gets or sets the config filepath.
 		/// </summary>
-		/// <param name="path">Path to torrent dir.</param>
-		public void setTorrentPath(string path)
+		/// <value>The config filepath including filename.</value>
+		public string configFilePath
 		{
-			if (!Directory.Exists (path))
-			{
-				throw new Exception ("Not a valid path for the .torrent files.");
+			get {
+				return conf.configPath;
 			}
-			this.conf.torrentPath = path;
+			set {
+				conf.configPath = value;
+			}
 		}
 
 		/// <summary>
-		/// Gets the token to start the bot.
+		/// Gets or sets the torrent files path.
 		/// </summary>
-		/// <returns>Returns a <c>string</c> that contains the bot Token</returns>
-		public string getToken() 
+		/// <value>The torrent files path.</value>
+		public string torrentFilesPath
 		{
-			string token = "";
-
-			if (!isPathSet)
-			{
-				throw new IOException ("You have to set the path to the config file first");
+			get {
+				return conf.torrentPath;
 			}
-
-			if (!isConfigSet)
-			{
-				this.conf = loadConfFile (conf.configPath);
+			set {
+				conf.torrentPath = value;
 			}
-
-			token = this.conf.token;
-			return token;
-		}
-
-		/// <summary>
-		/// Gets the Password to authenticate.
-		/// </summary>
-		/// <returns>Returns a <c>string</c> that contains the auth Password</returns>
-		public string getPW()
-		{
-			string pW = "";
-
-			if (!isPathSet)
-			{
-				throw new IOException ("You have to set the path to the config file first");
-			}
-
-			if (!isConfigSet)
-			{
-				this.conf = loadConfFile (conf.configPath);
-			}
-
-			pW = this.conf.authPW;
-			return pW;
-		}
-
-		/// <summary>
-		/// Gets the path to the config file.
-		/// </summary>
-		/// <returns>Returns a <c>string</c> that contains the path to the config file</returns>
-		public string getConfigPath()
-		{
-			string path = "";
-
-			if (!isPathSet)
-			{
-				throw new IOException ("You have to set the path to the config file first");
-			}
-
-			if (!isConfigSet)
-			{
-				this.conf = loadConfFile (conf.configPath);
-			}
-
-			path = this.conf.configPath;
-			return path;
-		}
-
-		/// <summary>
-		/// Gets the path where the .torrent files are saved.
-		/// </summary>
-		/// <returns>Returns a <c>string</c> that contains the path to the torrent files</returns>
-		public string getTorrentPath()
-		{
-			string path = "";
-
-			if (!isPathSet)
-			{
-				throw new IOException ("You have to set the path to the config file first");
-			}
-
-			if (!isConfigSet)
-			{
-				this.conf = loadConfFile (conf.configPath);
-			}
-
-			path = this.conf.torrentPath;
-			return path;
 		}
 		#endregion
 
