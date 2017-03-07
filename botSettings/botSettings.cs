@@ -403,7 +403,7 @@ namespace botSettings
 
 			public botConfig()
 			{
-				this.authList = new List<botUser>();
+				authList = new List<botUser>();
 			}
 		}
 	}

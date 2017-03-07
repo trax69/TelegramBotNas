@@ -2,12 +2,17 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/home/mihai/Desktop/nasBot/botSettings/botSettings.cs" line="173" column="1" />
+      <Breakpoint file="/home/mihai/Desktop/nasBot/Program.cs" line="219" column="1" />
+      <Breakpoint file="/home/mihai/Desktop/nasBot/Program.cs" line="231" column="1" />
+      <Breakpoint file="/home/mihai/Desktop/nasBot/Program.cs" line="232" column="1" />
+      <Breakpoint file="/home/mihai/Desktop/nasBot/Program.cs" line="237" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.Workbench ActiveDocument="Program.cs">
     <Files>
-      <File FileName="Program.cs" Line="262" Column="23" />
-      <File FileName="consoleTweaks.cs" Line="1" Column="1" />
+      <File FileName="Program.cs" Line="117" Column="14" />
       <File FileName="botSettings/botSettings.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
