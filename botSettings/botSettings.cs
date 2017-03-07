@@ -38,10 +38,9 @@ namespace botSettings
 	public class botSetting
 	{
 		// Private
-		private bool isConfigSet = false;
+		private bool isConfigLoaded = false;
 		private bool isPathSet = false;
 		private string filePathBackup;
-		private botChecks chk = new botChecks();
 		private botConfig conf = new botConfig();
 
 		public botSetting(string filePath)
@@ -72,7 +71,7 @@ namespace botSettings
 					filePathBackup = filePath; // crear una copia de la path
 					data = JsonConvert.DeserializeObject<botConfig>(sR.ReadLine());
 					data.configPath = filePathBackup; // volver a escribir la copia tras leer el null
-					this.isConfigSet = true;
+					isConfigLoaded = true;
 				}
 
 			} 
@@ -316,6 +315,12 @@ namespace botSettings
 		public string botToken
 		{
 			get {
+				if (!isConfigLoaded) {
+					if (!isPathSet) {
+						throw new IOException ("Please set a config file path");
+					}
+					loadConfig ();
+				}
 				return conf.token;
 			}
 			set {
@@ -330,6 +335,12 @@ namespace botSettings
 		public string passWord
 		{
 			get {
+				if (!isConfigLoaded) {
+					if (!isPathSet) {
+						throw new IOException ("Please set a config file path");
+					}
+					loadConfig ();
+				}
 				return conf.authPW;
 			}
 			set {
@@ -344,10 +355,17 @@ namespace botSettings
 		public string configFilePath
 		{
 			get {
+				if (!isConfigLoaded) {
+					if (!isPathSet) {
+						throw new IOException ("Please set a config file path");
+					}
+					loadConfig ();
+				}
 				return conf.configPath;
 			}
 			set {
 				conf.configPath = value;
+				isPathSet = true;
 			}
 		}
 
@@ -358,6 +376,12 @@ namespace botSettings
 		public string torrentFilesPath
 		{
 			get {
+				if (!isConfigLoaded) {
+					if (!isPathSet) {
+						throw new IOException ("Please set a config file path");
+					}
+					loadConfig ();
+				}
 				return conf.torrentPath;
 			}
 			set {
