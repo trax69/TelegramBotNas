@@ -39,21 +39,15 @@
     <Reference Include="System.Net.Http.Formatting">
       <HintPath>packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
-    <Reference Include="System.Net.Http" />
     <Reference Include="Telegram.Bot">
       <HintPath>packages\Telegram.Bot.10.4.0\lib\net45\Telegram.Bot.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Net" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Net.Http.WebRequest" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="consoleTweaks.cs" />
-    <Compile Include="config.cs" />
-    <Compile Include="checks.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -68,4 +62,10 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <ProjectReference Include="botSettings\botSettings.csproj">
+      <Project>{07223682-D404-4097-BFD6-838F1720FDCF}</Project>
+      <Name>botSettings</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
