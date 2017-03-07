@@ -145,8 +145,7 @@ namespace botSettings
 		/// <param name="lastName">User Last Name (string).</param>
 		/// <param name="userName">User's UserName (string).</param>
 		/// <param name="isAuth">Is user authenticated (bool) ?</param>
-		/// <param name="inAuthProcess">Is user in authentication process (bool) ?</param>
-		/// <param name="banUntil">When is the user able to put password again (dateTime).</param>
+		/// <param name="isAuthProcess">Is user in authentication process (bool) ?</param>
 		/// <param name="num">User Number of trys (int).</param>
 		/// <param name="rol">User Role (usrRole).</param>
 		public void addUser(int ID, string firstName = "", string lastName = "", string userName = "",
