@@ -6,7 +6,8 @@
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.Workbench ActiveDocument="Program.cs">
     <Files>
-      <File FileName="Program.cs" Line="456" Column="1" />
+      <File FileName="Program.cs" Line="225" Column="9" />
+      <File FileName="botSettings\botSettings.cs" Line="296" Column="23" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MultiItemStartupConfigurations />

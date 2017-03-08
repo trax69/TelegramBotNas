@@ -57,13 +57,14 @@ namespace botSettings
 		private botConfig loadConfFile(string filePath)
 		{
 			botConfig data = new botConfig();
-			Debug.WriteLine ("Loading config file.");
-			try {
+			Debug.WriteLine("Loading config file.");
+			try
+			{
 
-				if (!File.Exists (filePath))
+				if (!File.Exists(filePath))
 				{
-					File.Create (filePath).Close ();	// Create the file for the first time
-					saveConfFile(filePath, dataToJson(data));	// Parse the empty class for the first time and Save It.
+					File.Create(filePath).Close();  // Create the file for the first time
+					saveConfFile(filePath, dataToJson(data));   // Parse the empty class for the first time and Save It.
 				}
 
 				using (StreamReader sR = new StreamReader(filePath))
@@ -74,10 +75,10 @@ namespace botSettings
 					isConfigLoaded = true;
 				}
 
-			} 
+			}
 			catch (IOException ex)
 			{
-				Debug.WriteLine ("loadConfFile Error: " + ex.Message);
+				Debug.WriteLine("loadConfFile Error: " + ex.Message);
 			}
 			return data;
 		}
@@ -93,18 +94,19 @@ namespace botSettings
 		{
 			bool isSaved = false; // Ponerlo a false
 			Debug.WriteLine("Saving to config file.");
-			try {
-				
+			try
+			{
+
 				using (StreamWriter sW = new StreamWriter(filePath))
 				{
 					sW.WriteLine(data);
 				}
 				isSaved = true;
 
-			} 
+			}
 			catch (IOException ex)
 			{
-				Debug.WriteLine ("saveConfFile Error: " + ex.Message);
+				Debug.WriteLine("saveConfFile Error: " + ex.Message);
 			}
 			return isSaved;
 		}
@@ -124,7 +126,7 @@ namespace botSettings
 		/// </summary>
 		public void loadConfig()
 		{
-			this.conf = this.loadConfFile (this.conf.configPath);
+			this.conf = this.loadConfFile(this.conf.configPath);
 		}
 
 		/// <summary>
@@ -132,7 +134,7 @@ namespace botSettings
 		/// </summary>
 		public void saveConfig()
 		{
-			this.saveConfFile (this.conf.configPath, dataToJson (this.conf));
+			this.saveConfFile(this.conf.configPath, dataToJson(this.conf));
 		}
 
 		#region "User Get's and Set's"
@@ -148,31 +150,33 @@ namespace botSettings
 		/// <param name="isAuthProcess">Is user in authentication process (bool) ?</param>
 		/// <param name="num">User Number of trys (int).</param>
 		/// <param name="rol">User Role (usrRole).</param>
-		public void addUser(int ID, string firstName = "", string lastName = "", string userName = "",
+		public void addUser(int ID, int lastMsgID, string firstName = "", string lastName = "", string userName = "",
 		bool isAuth = false, bool isAuthProcess = false,
-		int num = 3, usrRole rol = usrRole.Normal)
+		int nrTry = 3, usrRole rol = usrRole.Normal)
 		{
-			botUser data = new botUser ();
+			var data = new botUser();
 			data.iD = ID;
+			data.lastMsgID = lastMsgID;
 			data.firstName = firstName;
 			data.lastName = lastName;
 			data.userName = userName;
 			data.isAuth = isAuth;
-			data.inAuthProcess = isAuthProcess;
+			data.inputText = isAuthProcess;
 			data.banUntil = DateTime.Now;
-			data.nrTry = num;
-			data.role = usrRole.Normal;
+			data.nrTry = nrTry;
+			data.role = rol;
 
-			try {
-				conf.authList.Add (data);
-				Debug.WriteLine("New user added to the authList");
-			} 
-			catch (Exception ex) 
+			try
 			{
-				Debug.WriteLine ("addUser Error: " + ex.Message);
+				conf.authList.Add(data);
+				Debug.WriteLine("New user added to the authList");
+			}
+			catch (Exception ex)
+			{
+				Debug.WriteLine("addUser Error: " + ex.Message);
 			}
 		}
-			
+
 		/// <summary>
 		/// Checks if the user is already in the auth list
 		/// </summary>
@@ -181,8 +185,8 @@ namespace botSettings
 		public int getIndexAuthList(int ID)
 		{
 			int data;
-			data = conf.authList.FindIndex (botUser => botUser.iD == ID);
-			Debug.WriteLine ("Is user auth in list: (int) " + data);
+			data = conf.authList.FindIndex(botUser => botUser.iD == ID);
+			Debug.WriteLine("Is user auth in list: (int) " + data);
 			return data;
 		}
 
@@ -193,7 +197,7 @@ namespace botSettings
 		/// <param name="newRole">New role.</param>
 		public void setUserRole(int listIndex, usrRole newRole)
 		{
-			conf.authList [listIndex].role = newRole;
+			conf.authList[listIndex].role = newRole;
 		}
 
 		/// <summary>
@@ -203,7 +207,17 @@ namespace botSettings
 		/// <param name="newNrTrys">New nr trys.</param>
 		public void setUserTrys(int listIndex, int newNrTrys)
 		{
-			conf.authList [listIndex].nrTry = newNrTrys;
+			conf.authList[listIndex].nrTry = newNrTrys;
+		}
+
+		/// <summary>
+		/// Sets the user last message identifier.
+		/// </summary>
+		/// <param name="listIndex">List index.</param>
+		/// <param name="lastMsgID">Last message identifier.</param>
+		public void setUserLastMsgID(int listIndex, int lastMsgID)
+		{
+			conf.authList[listIndex].lastMsgID = lastMsgID;
 		}
 
 		/// <summary>
@@ -223,7 +237,7 @@ namespace botSettings
 		/// <param name="newInAuthProcess">If set to <c>true</c> new in auth process.</param>
 		public void setUserInAuthProcess(int listIndex, bool newInAuthProcess)
 		{
-			conf.authList [listIndex].inAuthProcess = newInAuthProcess;
+			conf.authList [listIndex].inputText = newInAuthProcess;
 		}
 
 		/// <summary>
@@ -277,6 +291,16 @@ namespace botSettings
 		}
 
 		/// <summary>
+		/// Gets the user last message identifier.
+		/// </summary>
+		/// <returns>The user last message identifier.</returns>
+		/// <param name="listIndex">List index.</param>
+		public int getUserLastMsgID(int listIndex) 
+		{
+			return conf.authList[listIndex].lastMsgID;
+		}
+
+		/// <summary>
 		/// Check if the user is authenticated
 		/// </summary>
 		/// <returns><c>true</c>, if is user is authenticated, <c>false</c> otherwise.</returns>
@@ -293,7 +317,7 @@ namespace botSettings
 		/// <param name="listIndex">Index of the auth list. You can get it with getIndexAuthList.</param>
 		public bool getIsUserInAuthProcess(int listIndex)
 		{
-			return conf.authList [listIndex].inAuthProcess;
+			return conf.authList [listIndex].inputText;
 		}
 
 		/// <summary>
@@ -421,7 +445,8 @@ namespace botSettings
 		/// </summary>
 		/// <value>The number of trys</value>
 		public int nrTry { get; set; }
-		public bool inAuthProcess { get; set; }
+		public int lastMsgID { get; set; }
+		public bool inputText { get; set; }
 		public bool isAuth { get; set; }
 		public DateTime banUntil { get; set; }
 		/// <summary>
