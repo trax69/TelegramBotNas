@@ -1,5 +1,5 @@
 ﻿//
-//  MyClass.cs
+//  botSettings.cs
 //
 //  Author:
 //       Big Cash Monkeys <admin@bcm.ovh>
@@ -32,310 +32,181 @@ using botSettings.Enums;
 
 namespace botSettings
 {
-	/// <summary>
-	/// Class used to save Telegram Bot Settings
-	/// </summary>
-	public class botSetting
-	{
-		// Private
-		private bool isConfigLoaded = false;
-		private bool isPathSet = false;
-		private string filePathBackup;
-		private botConfig conf = new botConfig();
+    /// <summary>
+    /// Class used to save Telegram Bot Settings
+    /// </summary>
+    public class botSetting
+    {
+        // Private
+        private bool isConfigLoaded = false;
+        private bool isPathSet = false;
+        private string filePathBackup;
+        private botConfig conf = new botConfig();
 
-		public botSetting(string filePath)
-		{
-			configFilePath = filePath;
-		}
+        public botSetting(string filePath)
+        {
+            configFilePath = filePath;
+        }
 
-		/// <summary>
-		/// Loads contents of the config file.
-		/// Debugs to Console if Error.
-		/// </summary>
-		/// <returns><c>String</c> to parse as class if config file was loaded, <c>null</c> otherwise.</returns>
-		/// <param name="filePath">Path and Name of the file to be loaded.</param>
-		private botConfig loadConfFile(string filePath)
-		{
-			botConfig data = new botConfig();
-			Debug.WriteLine("Loading config file.");
-			try
-			{
+        /// <summary>
+        /// Loads contents of the config file.
+        /// Debugs to Console if Error.
+        /// </summary>
+        /// <returns><c>String</c> to parse as class if config file was loaded, <c>null</c> otherwise.</returns>
+        /// <param name="filePath">Path and Name of the file to be loaded.</param>
+        private botConfig loadConfFile(string filePath)
+        {
+            botConfig data = new botConfig();
+            Debug.WriteLine("Loading config file.");
+            try
+            {
 
-				if (!File.Exists(filePath))
-				{
-					File.Create(filePath).Close();  // Create the file for the first time
-					saveConfFile(filePath, dataToJson(data));   // Parse the empty class for the first time and Save It.
-				}
+                if (!File.Exists(filePath))
+                {
+                    File.Create(filePath).Close();  // Create the file for the first time
+                    saveConfFile(filePath, dataToJson(data));   // Parse the empty class for the first time and Save It.
+                }
 
-				using (StreamReader sR = new StreamReader(filePath))
-				{
-					filePathBackup = filePath; // crear una copia de la path
-					data = JsonConvert.DeserializeObject<botConfig>(sR.ReadLine());
-					data.configPath = filePathBackup; // volver a escribir la copia tras leer el null
-					isConfigLoaded = true;
-				}
+                using (StreamReader sR = new StreamReader(filePath))
+                {
+                    filePathBackup = filePath; // crear una copia de la path
+                    data = JsonConvert.DeserializeObject<botConfig>(sR.ReadLine());
+                    data.configPath = filePathBackup; // volver a escribir la copia tras leer el null
+                    isConfigLoaded = true;
+                }
 
-			}
-			catch (IOException ex)
-			{
-				Debug.WriteLine("loadConfFile Error: " + ex.Message);
-			}
-			return data;
-		}
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine("loadConfFile Error: " + ex.Message);
+            }
+            return data;
+        }
 
-		/// <summary>
-		/// Saves the config to file path.
-		/// Debugs to console if Error.
-		/// </summary>
-		/// <returns><c>True</c>, if config file was saved, <c>false</c> otherwise.</returns>
-		/// <param name="filePath">Path and Name to the file to be saved.</param>
-		/// <param name="data">Data to be saved (should be JSON)</param>
-		private bool saveConfFile(string filePath, string data)
-		{
-			bool isSaved = false; // Ponerlo a false
-			Debug.WriteLine("Saving to config file.");
-			try
-			{
+        /// <summary>
+        /// Saves the config to file path.
+        /// Debugs to console if Error.
+        /// </summary>
+        /// <returns><c>True</c>, if config file was saved, <c>false</c> otherwise.</returns>
+        /// <param name="filePath">Path and Name to the file to be saved.</param>
+        /// <param name="data">Data to be saved (should be JSON)</param>
+        private bool saveConfFile(string filePath, string data)
+        {
+            bool isSaved = false; // Ponerlo a false
+            Debug.WriteLine("Saving to config file.");
+            try
+            {
 
-				using (StreamWriter sW = new StreamWriter(filePath))
-				{
-					sW.WriteLine(data);
-				}
-				isSaved = true;
+                using (StreamWriter sW = new StreamWriter(filePath))
+                {
+                    sW.WriteLine(data);
+                }
+                isSaved = true;
 
-			}
-			catch (IOException ex)
-			{
-				Debug.WriteLine("saveConfFile Error: " + ex.Message);
-			}
-			return isSaved;
-		}
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine("saveConfFile Error: " + ex.Message);
+            }
+            return isSaved;
+        }
 
-		/// <summary>
-		/// Class that converts data to <c>String</c>
-		/// </summary>
-		/// <returns>JSON Parsed string</returns>
-		/// <param name="data">Class to be serialized in JSON</param>
-		private string dataToJson(botConfig data)
-		{
-			return JsonConvert.SerializeObject(data);
-		}
+        /// <summary>
+        /// Class that converts data to <c>String</c>
+        /// </summary>
+        /// <returns>JSON Parsed string</returns>
+        /// <param name="data">Class to be serialized in JSON</param>
+        private string dataToJson(botConfig data)
+        {
+            return JsonConvert.SerializeObject(data);
+        }
 
-		/// <summary>
-		/// Loads the config from the file path (must include filename in path).
-		/// </summary>
-		public void loadConfig()
-		{
-			this.conf = this.loadConfFile(this.conf.configPath);
-		}
+        /// <summary>
+        /// Loads the config from the file path (must include filename in path).
+        /// </summary>
+        public void loadConfig()
+        {
+            this.conf = this.loadConfFile(this.conf.configPath);
+        }
 
-		/// <summary>
-		/// Saves the config from the class to the file (JSON).
-		/// </summary>
-		public void saveConfig()
-		{
-			this.saveConfFile(this.conf.configPath, dataToJson(this.conf));
-		}
+        /// <summary>
+        /// Saves the config from the class to the file (JSON).
+        /// </summary>
+        public void saveConfig()
+        {
+            this.saveConfFile(this.conf.configPath, dataToJson(this.conf));
+        }
 
-		#region "User Get's and Set's"
-		/// <summary>
-		/// Adds the an user to the auth list.
-		/// </summary>
-		/// <returns><c>true</c>, if user was added, <c>false</c> otherwise.</returns>
-		/// <param name="ID">UserID (int).</param>
-		/// <param name="firstName">User First Name (string).</param>
-		/// <param name="lastName">User Last Name (string).</param>
-		/// <param name="userName">User's UserName (string).</param>
-		/// <param name="isAuth">Is user authenticated (bool) ?</param>
-		/// <param name="isAuthProcess">Is user in authentication process (bool) ?</param>
-		/// <param name="num">User Number of trys (int).</param>
-		/// <param name="rol">User Role (usrRole).</param>
-		public void addUser(int ID, int lastMsgID, string firstName = "", string lastName = "", string userName = "",
-		bool isAuth = false, bool isAuthProcess = false,
-		int nrTry = 3, usrRole rol = usrRole.Normal)
-		{
-			var data = new botUser();
-			data.iD = ID;
-			data.lastMsgID = lastMsgID;
-			data.firstName = firstName;
-			data.lastName = lastName;
-			data.userName = userName;
-			data.isAuth = isAuth;
-			data.inputText = isAuthProcess;
-			data.banUntil = DateTime.Now;
-			data.nrTry = nrTry;
-			data.role = rol;
+        #region "User Get's and Set's"
+        /// <summary>
+        /// Adds the an user to the auth list.
+        /// </summary>
+        /// <returns><c>true</c>, if user was added, <c>false</c> otherwise.</returns>
+        /// <param name="ID">UserID (int).</param>
+        /// <param name="firstName">User First Name (string).</param>
+        /// <param name="lastName">User Last Name (string).</param>
+        /// <param name="userName">User's UserName (string).</param>
+        /// <param name="isAuth">Is user authenticated (bool) ?</param>
+        /// <param name="isAuthProcess">Is user in authentication process (bool) ?</param>
+        /// <param name="num">User Number of trys (int).</param>
+        /// <param name="rol">User Role (usrRole).</param>
+        public void addUser(int ID, string firstName = "", string lastName = "", string userName = "",
+        bool isAuth = false, bool isAuthProcess = false, int lastMsgID = -1,
+        int nrTry = 3, usrRole rol = usrRole.Normal)
+        {
+            var data = new botUser();
+            data.iD = ID;
+            data.lastMsgID = lastMsgID;
+            data.firstName = firstName;
+            data.lastName = lastName;
+            data.userName = userName;
+            data.isAuth = isAuth;
+            data.inputText = isAuthProcess;
+            data.banUntil = DateTime.Now;
+            data.nrTry = nrTry;
+            data.role = rol;
 
-			try
-			{
-				conf.authList.Add(data);
-				Debug.WriteLine("New user added to the authList");
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine("addUser Error: " + ex.Message);
-			}
-		}
+            try
+            {
+                conf.authList.Add(data);
+                Debug.WriteLine("New user added to the authList");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("addUser Error: " + ex.Message);
+            }
+        }
 
-		/// <summary>
-		/// Checks if the user is already in the auth list
-		/// </summary>
-		/// <returns>The userID in auth list, -1 otherwise</returns>
-		/// <param name="ID">UserID (int).</param>
-		public int getIndexAuthList(int ID)
-		{
-			int data;
-			data = conf.authList.FindIndex(botUser => botUser.iD == ID);
-			Debug.WriteLine("Is user auth in list: (int) " + data);
-			return data;
-		}
+        /// <summary>
+        /// Checks if the user is already in the auth list
+        /// </summary>
+        /// <returns>The userID in auth list, -1 otherwise</returns>
+        /// <param name="ID">UserID (int).</param>
+        public int getIndexAuthList(int ID)
+        {
+            int data;
+            data = conf.authList.FindIndex(botUser => botUser.iD == ID);
+            Debug.WriteLine("Is user auth in list: (int) " + data);
+            return data;
+        }
 
-		/// <summary>
-		/// Sets the user role.
-		/// </summary>
-		/// <param name="listIndex">List index.</param>
-		/// <param name="newRole">New role.</param>
-		public void setUserRole(int listIndex, usrRole newRole)
-		{
-			conf.authList[listIndex].role = newRole;
-		}
+        /// <summary>
+        /// Get's the user from the list so you change it's propertys
+        /// </summary>
+        /// <param name="listIndex">Index of the user in the list element</param>
+        /// <returns>Returns an <see cref="botUser"/> object</returns>
+        public botUser userPropertys(int listIndex)
+        {
+            return conf.authList[listIndex];
+        }
+        #endregion
 
-		/// <summary>
-		/// Sets the user trys.
-		/// </summary>
-		/// <param name="listIndex">List index.</param>
-		/// <param name="newNrTrys">New nr trys.</param>
-		public void setUserTrys(int listIndex, int newNrTrys)
-		{
-			conf.authList[listIndex].nrTry = newNrTrys;
-		}
-
-		/// <summary>
-		/// Sets the user last message identifier.
-		/// </summary>
-		/// <param name="listIndex">List index.</param>
-		/// <param name="lastMsgID">Last message identifier.</param>
-		public void setUserLastMsgID(int listIndex, int lastMsgID)
-		{
-			conf.authList[listIndex].lastMsgID = lastMsgID;
-		}
-
-		/// <summary>
-		/// Sets the user is auth.
-		/// </summary>
-		/// <param name="listIndex">List index.</param>
-		/// <param name="newIsAuth">If set to <c>true</c> new is auth.</param>
-		public void setUserIsAuth(int listIndex, bool newIsAuth)
-		{
-			conf.authList [listIndex].isAuth = newIsAuth;
-		}
-
-		/// <summary>
-		/// Sets the user in auth process.
-		/// </summary>
-		/// <param name="listIndex">List index.</param>
-		/// <param name="newInAuthProcess">If set to <c>true</c> new in auth process.</param>
-		public void setUserInAuthProcess(int listIndex, bool newInAuthProcess)
-		{
-			conf.authList [listIndex].inputText = newInAuthProcess;
-		}
-
-		/// <summary>
-		/// Sets the user ban until.
-		/// </summary>
-		/// <param name="listIndex">List index.</param>
-		/// <param name="newBanUntil">New ban until.</param>
-		public void setUserBanUntil(int listIndex, DateTime newBanUntil)
-		{
-			conf.authList [listIndex].banUntil = newBanUntil;
-		}
-
-		/// <summary>
-		/// Gets the name of the user first.
-		/// </summary>
-		/// <returns>The user first name.</returns>
-		/// <param name="listIndex">List index.</param>
-		public string getUserFirstName(int listIndex)
-		{
-			return conf.authList [listIndex].firstName;
-		}
-
-		/// <summary>
-		/// Gets the name of the user last.
-		/// </summary>
-		/// <returns>The user last name.</returns>
-		/// <param name="listIndex">List index.</param>
-		public string getUserLastName(int listIndex)
-		{
-			return conf.authList [listIndex].lastName;
-		}
-
-		/// <summary>
-		/// Gets the name of the user user.
-		/// </summary>
-		/// <returns>The user user name.</returns>
-		/// <param name="listIndex">List index.</param>
-		public string getUserUserName(int listIndex)
-		{
-			return conf.authList [listIndex].userName;
-		}
-
-		/// <summary>
-		/// Gets the user trys.
-		/// </summary>
-		/// <returns>The user trys.</returns>
-		/// <param name="listIndex">Index of the auth list. You can get it with getIndexAuthList.</param>
-		public int getUserTrys(int listIndex)
-		{
-			return conf.authList[listIndex].nrTry;
-		}
-
-		/// <summary>
-		/// Gets the user last message identifier.
-		/// </summary>
-		/// <returns>The user last message identifier.</returns>
-		/// <param name="listIndex">List index.</param>
-		public int getUserLastMsgID(int listIndex) 
-		{
-			return conf.authList[listIndex].lastMsgID;
-		}
-
-		/// <summary>
-		/// Check if the user is authenticated
-		/// </summary>
-		/// <returns><c>true</c>, if is user is authenticated, <c>false</c> otherwise.</returns>
-		/// <param name="listIndex">Index of the auth list. You can get it with getIndexAuthList.</param>
-		public bool getIsUserAuth(int listIndex)
-		{
-			return conf.authList [listIndex].isAuth;
-		}
-
-		/// <summary>
-		/// Check is the user is in the authentication process
-		/// </summary>
-		/// <returns><c>true</c>, if is user is in auth process, <c>false</c> otherwise.</returns>
-		/// <param name="listIndex">Index of the auth list. You can get it with getIndexAuthList.</param>
-		public bool getIsUserInAuthProcess(int listIndex)
-		{
-			return conf.authList [listIndex].inputText;
-		}
-
-		/// <summary>
-		/// Gets the time and date until the user is banned.
-		/// </summary>
-		/// <returns>Date and time until the user is banned.</returns>
-		/// <param name="listIndex">Index of the auth list. You can get it with getIndexAuthList.</param>
-		public DateTime getBanUntil(int listIndex) {
-			return conf.authList[listIndex].banUntil;
-		}
-		#endregion
-
-		#region "Config Get's and Set's"
-		/// <summary>
-		/// Gets or sets the bot token.
-		/// </summary>
-		/// <value>The bot token.</value>
-		public string botToken
+        #region "Config Get's and Set's"
+        /// <summary>
+        /// Gets or sets the bot token.
+        /// </summary>
+        /// <value>The bot token.</value>
+        public string botToken
 		{
 			get {
 				if (!isConfigLoaded) {
