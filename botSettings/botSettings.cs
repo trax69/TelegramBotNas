@@ -148,7 +148,7 @@ namespace botSettings
         /// <param name="userName">User's UserName (string).</param>
         /// <param name="isAuth">Is user authenticated (bool) ?</param>
         /// <param name="isAuthProcess">Is user in authentication process (bool) ?</param>
-        /// <param name="num">User Number of trys (int).</param>
+        /// <param name="nrTry">User Number of trys (int).</param>
         /// <param name="rol">User Role (usrRole).</param>
         public void addUser(int ID, string firstName = "", string lastName = "", string userName = "",
         bool isAuth = false, bool isAuthProcess = false, int lastMsgID = -1,
@@ -156,7 +156,6 @@ namespace botSettings
         {
             var data = new botUser();
             data.iD = ID;
-            data.lastMsgID = lastMsgID;
             data.firstName = firstName;
             data.lastName = lastName;
             data.userName = userName;
@@ -272,7 +271,7 @@ namespace botSettings
 			get {
 				if (!isConfigLoaded) {
 					if (!isPathSet) {
-						throw new IOException ("Please set a config file path");
+						throw new IOException ("Please set the torrent directory path");
 					}
 					loadConfig ();
 				}
@@ -316,7 +315,6 @@ namespace botSettings
 		/// </summary>
 		/// <value>The number of trys</value>
 		public int nrTry { get; set; }
-		public int lastMsgID { get; set; }
 		public bool inputText { get; set; }
 		public bool isAuth { get; set; }
 		public DateTime banUntil { get; set; }
