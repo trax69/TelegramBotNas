@@ -1,21 +1,43 @@
 #!/bin/bash
 
-# Copy System.dll
-cp packages/Microsoft.AspNet.WebApi.Client.5.2.3/lib/net45/System.Net.Http.Formatting.dll .
+paquete="$(dpkg -l | grep mono-complete)"
+echo "----------------------------"
+echo "Comprobando las dependencias"
+echo "----------------------------"
+sleep 1
+if [ -z "$paquete" ]
+then
+echo "Mono NO está instalado vamos a proceder a instalarlo"
+sleep 3
+apt-update && apt-get install mono-complete
+else
+echo "Mono está instalado continuamos con la compilación"
+fi
 
-# Copy Json.dll
-cp packages/Newtonsoft.Json.9.0.1/lib/net45/Newtonsoft.Json.dll .
+sleep 1
+echo "----------------------------"
+echo "Procediendo a parchear los archivos y posterior compilado"
+### POR AHORA NO ES NECESARIO Parchear el  archivo nasBot.csproj modificando ToolsVersion=12
+### sed -i 's/ToolsVersion="4.0"/ToolsVersion="12"/g' nasBot.csproj
+echo "----------------------------"
+sleep 1
+echo "Compilando..."
+echo "----------------------------"
+# Compilar 
+xbuild nasBot.sln
 
-# Copy Telegram.dll
-cp packages/Telegram.Bot.10.4.0/lib/net45/Telegram.Bot.dll .
+echo "----------------------------"
+echo "Importando los certificados ssl de telegram para poder funcioanr"
+echo "----------------------------"
+#Una  vez compilado tenemos que importar los certificados ssl
+#Comprobar si esta instalado
+certmgr -ssl http://telegram.org
 
-# Create botSettings.dll
-cd botSettings
-dmcs -o "botSettings.dll" -t:library -r:../Newtonsoft.Json.dll botSettings.cs botSettingsChecks.cs botSettingsEnums.cs
-cd ..
+#Cambiar el nombre de la carpeta 
+mv Debug Compiled
 
-# Copy botSettings.dll
-cp botSettings/botSettings.dll .
-
-# Compile nasBot
-dmcs -o "nasBot" -r:System.Net.Http.Formatting.dll -r:botSettings.dll -r:Newtonsoft.Json.dll -r:Telegram.Bot.dll Program.cs consoleTweaks.cs
+echo "----------------------------" 
+echo "Compilacion finalizada"
+echo "----------------------------"
+#Finalizamos script
+exit
