@@ -16,7 +16,7 @@ y posteriormente
 
 ```
 cd TelegramBotNas
-"./compileBot.sh"
+./compileBot.sh
 ```
 Se encargará de comprobar que tienes todas las dependencias instaladas para compilarlo, certificados
 y todo lo necesario quedando finalmente compilado en la carpeta "Compiled"
@@ -33,10 +33,10 @@ Cualquier reporte de algun fallo nos vendrá bien para mejorarlo.
 CARACTERISTICAS
 --------------
 
--Por el momento se puede reiniciar y apagar remotamente.
--Agregar, eliminar, listar torrents.
--Organizar las cuentas para manegar el NAS desde Telegram.
--Saver el estado de nuestro nas (RAM,espacio en discos, etc)
+- Por el momento se puede reiniciar y apagar remotamente.
+- Agregar, eliminar, listar torrents.
+- Organizar las cuentas para manegar el NAS desde Telegram.
+- Saver el estado de nuestro nas (RAM,espacio en discos, etc)
 
 
 Puedes sugerirnos cualquier implementacion y la estudiaremos.
