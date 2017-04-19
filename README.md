@@ -32,11 +32,11 @@ Cualquier reporte de algun fallo nos vendrá bien para mejorarlo.
 
 CARACTERISTICAS
 --------------
-
-- Por el momento se puede reiniciar y apagar remotamente.
+- Reiniciar y apagar remotamente.
 - Agregar, eliminar, listar torrents.
 - Organizar las cuentas para manegar el NAS desde Telegram.
-- Saver el estado de nuestro nas (RAM,espacio en discos, etc)
+- Saver el estado de nuestro NAS(RAM,espacio en discos, etc)
+- Detener el bot
 
 
 Puedes sugerirnos cualquier implementacion y la estudiaremos.
