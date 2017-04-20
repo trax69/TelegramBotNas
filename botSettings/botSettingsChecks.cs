@@ -20,7 +20,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
-
+using System.IO;
 namespace botSettings.Checks
 {
 	public class botChecks 
@@ -58,7 +58,17 @@ namespace botSettings.Checks
 			return _isOk;
 		}
 
-		public static bool isLinux () {
+        public bool checkPath(string path)
+        {
+            bool _isOk = false;
+            if (Directory.Exists(path))
+            {
+                _isOk = true;
+            }
+            return _isOk;
+        }
+
+        public static bool isLinux () {
 			int p = (int)System.Environment.OSVersion.Platform;
 			return (p == 4) || (p == 6) || (p == 128);
 		}
