@@ -7,8 +7,9 @@ solucionando y añadiendo nuevas caracteristicas.
 Es totalmente personalizable y facilita con las tareas remotas de 
 control de nuestro NAS
 
-Para compilar en LINUX simplente con escribir: 
-
+LINUX
+--------------
+Para compilar ejecutar los siguientes comandos.
 ```
 git clone https://github.com/trax69/TelegramBotNas.git
 ```
