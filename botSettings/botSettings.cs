@@ -281,18 +281,72 @@ namespace botSettings
 				conf.torrentPath = value;
 			}
 		}
-		#endregion
 
-		/// <summary>
-		/// Class where all the app settings are going to be saved to we can serialize to JSON
-		/// </summary>
-		private class botConfig
+        /// <summary>
+        /// Gets or sets the torrent files path.
+        /// </summary>
+        /// <value>The torrent files path.</value>
+        public string incompleteFilesPath
+        {
+            get
+            {
+                if (!isConfigLoaded)
+                {
+                    if (!isPathSet)
+                    {
+                        throw new IOException("Please set the incomplete directory path");
+                    }
+                    loadConfig();
+                }
+                return conf.incompletePath;
+            }
+            set
+            {
+                conf.incompletePath = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Gets or sets the torrent files path.
+        /// </summary>
+        /// <value>The torrent files path.</value>
+        public string completedFilesPath
+        {
+            get
+            {
+                if (!isConfigLoaded)
+                {
+                    if (!isPathSet)
+                    {
+                        throw new IOException("Please set the completed directory path");
+                    }
+                    loadConfig();
+                }
+                return conf.completedPath;
+            }
+            set
+            {
+                conf.completedPath = value;
+            }
+        }
+#endregion
+
+        /// <summary>
+        /// Class where all the app settings are going to be saved to we can serialize to JSON
+        /// </summary>
+        private class botConfig
 		{
 			public string token { get; set; }
 			public string authPW { get; set; }
 			public string configPath { get; set; }
-			public string torrentPath { get; set; }
-			public List<botUser> authList { get; set; }
+            public string torrentPath { get; set; }
+            public string incompletePath { get; set; }
+            public string completedPath { get; set; }
+
+
+
+            public List<botUser> authList { get; set; }
 
 			public botConfig()
 			{
